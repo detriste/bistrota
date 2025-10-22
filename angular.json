@@ -71,6 +71,11 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+          "options": {
+"proxyConfig": "proxy.conf.json"
+
+          },
+
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
@@ -136,7 +141,8 @@
   "cli": {
     "schematicCollections": [
       "@ionic/angular-toolkit"
-    ]
+    ],
+    "analytics": "ed7bc0b9-98d2-4ab4-8559-817c8d3bc176"
   },
   "schematics": {
     "@ionic/angular-toolkit:component": {

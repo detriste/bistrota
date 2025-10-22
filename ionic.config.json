@@ -3,5 +3,14 @@
   "integrations": {
     "capacitor": {}
   },
-  "type": "angular"
+  "type": "angular",
+  "server": {
+  "proxy":{
+  "target": "https://esp32-mongodb-idev3.onrender.com",
+  "changeOrigin" : true,
+  "secure": false
+  
+  
+  }
+}
 }
