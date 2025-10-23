@@ -1,0 +1,335 @@
+// Variáveis de cores em tons de azul
+$primary-blue: #0066CC;
+$light-blue: #4A90E2;
+$dark-blue: #003D7A;
+$sky-blue: #87CEEB;
+$ice-blue: #E3F2FD;
+$accent-blue: #2196F3;
+
+ion-content {
+  --background: #f0f4f8;
+}
+
+.header-info {
+  text-align: center;
+  padding: 20px 0;
+  margin-bottom: 20px;
+  
+  h2 {
+    color: $primary-blue;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+  }
+  
+  p {
+    color: $light-blue;
+    font-size: 16px;
+    margin: 0;
+  }
+}
+
+.sensor-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 102, 204, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(74, 144, 226, 0.2);
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 102, 204, 0.25);
+  }
+}
+
+.card-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  
+  .sensor-icon {
+    font-size: 32px;
+    color: $primary-blue;
+    background: $ice-blue;
+    padding: 8px;
+    border-radius: 12px;
+  }
+  
+  ion-card-subtitle {
+    color: $dark-blue;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+  }
+}
+
+.sensor-data {
+  padding: 8px 0;
+  
+  .data-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    transition: background 0.3s ease;
+    border: 1px solid #f0f0f0;
+    
+    &:hover {
+      background: $ice-blue;
+    }
+    
+    ion-icon {
+      font-size: 28px;
+      min-width: 28px;
+    }
+    
+    &.temperatura {
+      border-left: 4px solid #FF6B6B;
+      
+      ion-icon {
+        color: #FF6B6B;
+      }
+    }
+    
+    &.umidade {
+      border-left: 4px solid $accent-blue;
+      
+      ion-icon {
+        color: $accent-blue;
+      }
+    }
+    
+    .data-content {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      
+      .label {
+        font-size: 12px;
+        color: #666;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+      
+      .value {
+        font-size: 24px;
+        color: $dark-blue;
+        font-weight: 700;
+        margin-top: 4px;
+      }
+    }
+  }
+  
+  .timestamp {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: $ice-blue;
+    border-radius: 8px;
+    color: $light-blue;
+    font-size: 13px;
+    
+    ion-icon {
+      font-size: 18px;
+      color: $light-blue;
+    }
+  }
+}
+
+// ESTILOS PARA O DIVISOR
+.section-divider {
+  margin: 40px 0 20px 0;
+  --background: transparent;
+  --padding-start: 0;
+  
+  ion-label h2 {
+    color: $primary-blue;
+    font-size: 24px;
+    font-weight: 700;
+  }
+}
+
+// ESTILOS PARA HISTÓRICO (Lista)
+.historico-section {
+  margin-top: 20px;
+}
+
+.historico-list {
+  background: transparent;
+}
+
+.historico-item {
+  --background: white;
+  --border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
+  border: 1px solid rgba(74, 144, 226, 0.2);
+  
+  ion-label {
+    h3 {
+      color: $dark-blue;
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    
+    p {
+      color: #666;
+      font-size: 14px;
+      margin: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      &.timestamp-text {
+        color: $light-blue;
+        font-size: 12px;
+        margin-top: 8px;
+      }
+      
+      strong {
+        color: $dark-blue;
+      }
+    }
+    
+    .inline-icon {
+      font-size: 16px;
+      color: $accent-blue;
+    }
+  }
+  
+  ion-badge {
+    font-size: 16px;
+    font-weight: 700;
+    padding: 8px 12px;
+  }
+}
+
+// ESTILOS PARA HISTÓRICO (Cards - alternativa)
+.historico-grid {
+  margin-top: 20px;
+}
+
+.historico-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
+  border: 1px solid rgba(74, 144, 226, 0.2);
+  
+  ion-card-title {
+    color: $dark-blue;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  ion-card-subtitle {
+    color: $light-blue;
+    font-size: 12px;
+  }
+  
+  .historico-data {
+    display: flex;
+    gap: 20px;
+    
+    .data-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      color: $dark-blue;
+      font-weight: 600;
+      
+      ion-icon {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  
+  ion-icon {
+    font-size: 80px;
+    color: $light-blue;
+    margin-bottom: 20px;
+    opacity: 0.6;
+  }
+  
+  h3 {
+    color: $primary-blue;
+    font-size: 24px;
+    margin: 0 0 8px 0;
+  }
+  
+  p {
+    color: $light-blue;
+    font-size: 16px;
+    margin: 0;
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .header-info {
+    h2 {
+      font-size: 24px;
+    }
+    
+    p {
+      font-size: 14px;
+    }
+  }
+  
+  .sensor-card {
+    margin-bottom: 12px;
+  }
+  
+  .data-item .data-content .value {
+    font-size: 20px !important;
+  }
+}
+
+// Animações
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sensor-card, .historico-item, .historico-card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+ion-toolbar {
+  --background: linear-gradient(90deg, $primary-blue 0%, $light-blue 100%);
+  --color: white;
+  
+  ion-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    
+    ion-icon {
+      font-size: 24px;
+    }
+  }
+}

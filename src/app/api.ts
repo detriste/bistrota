@@ -11,8 +11,14 @@ export class Api {
 
   constructor(private htpp:HttpClient) {}
 
+  // Função original - GET leituras
   getSensores():Observable<any[]>{
     return this.htpp.get<any[]>(this.apiUrl+"/api/leituras/nercelso")
+  }
+  
+  // NOVA FUNÇÃO - GET histórico do dia
+  getHistoricoDia(collection: string):Observable<any[]>{
+    return this.htpp.get<any[]>(this.apiUrl+"/api/historico-dia/"+collection)
   }
   
 }

@@ -1,25 +1,139 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>dashboard</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>
+      <ion-icon name="stats-chart-outline" slot="start"></ion-icon>
+      Dashboard de Sensores
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-
-
-
-
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="ion-padding">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">dashboard</ion-title>
+      <ion-title size="large">Dashboard</ion-title>
     </ion-toolbar>
   </ion-header>
 
+  <!-- SEÇÃO 1: Leituras Atuais -->
+  <div class="header-info">
+    <h2>📊 Leituras Atuais</h2>
+    <p>Dados mais recentes dos sensores</p>
+  </div>
 
-<div *ngFor="let i of dados">
-  <p>temperatura: {{i["temperatura"]}}</p>
-  <p>umidade: {{i["umidade"]}}</p>
-  <p>timestamp: {{i["nome"]}}</p>
-  <p>timestamp: {{i["timestamp"]}}</p>
-</div>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-md="6" size-lg="4" *ngFor="let i of dados">
+        <ion-card class="sensor-card">
+          <ion-card-header>
+            <div class="card-header-content">
+              <ion-icon name="hardware-chip-outline" class="sensor-icon"></ion-icon>
+              <ion-card-subtitle>{{ i["nome"] }}</ion-card-subtitle>
+            </div>
+          </ion-card-header>
+          
+          <ion-card-content>
+            <div class="sensor-data">
+              <div class="data-item temperatura">
+                <ion-icon name="thermometer-outline"></ion-icon>
+                <div class="data-content">
+                  <span class="label">Temperatura</span>
+                  <span class="value">{{ i["temperatura"] }}°C</span>
+                </div>
+              </div>
+              
+              <div class="data-item umidade">
+                <ion-icon name="water-outline"></ion-icon>
+                <div class="data-content">
+                  <span class="label">Umidade</span>
+                  <span class="value">{{ i["umidade"] }}%</span>
+                </div>
+              </div>
+              
+              <div class="timestamp">
+                <ion-icon name="time-outline"></ion-icon>
+                <span>{{ i["timestamp"] }}</span>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div class="empty-state" *ngIf="dados.length === 0">
+    <ion-icon name="cloud-offline-outline"></ion-icon>
+    <h3>Nenhum dado disponível</h3>
+    <p>Aguardando leituras dos sensores...</p>
+  </div>
+
+  <!-- DIVISOR -->
+  <ion-item-divider class="section-divider">
+    <ion-label>
+      <h2>📈 Histórico do Dia</h2>
+    </ion-label>
+  </ion-item-divider>
+
+  <!-- SEÇÃO 2: Histórico do Dia -->
+  <div class="historico-section">
+    <ion-list *ngIf="historicoDia.length > 0" class="historico-list">
+      <ion-item *ngFor="let item of historicoDia" class="historico-item">
+        <ion-icon name="calendar-outline" slot="start" color="primary"></ion-icon>
+        
+        <ion-label>
+          <h3>{{ item["nome"] || 'Sensor' }}</h3>
+          <p>
+            <ion-icon name="thermometer-outline" class="inline-icon"></ion-icon>
+            <strong>Temperatura:</strong> {{ item["temperatura"] }}°C
+          </p>
+          <p>
+            <ion-icon name="water-outline" class="inline-icon"></ion-icon>
+            <strong>Umidade:</strong> {{ item["umidade"] }}%
+          </p>
+          <p class="timestamp-text">
+            <ion-icon name="time-outline" class="inline-icon"></ion-icon>
+            {{ item["timestamp"] }}
+          </p>
+        </ion-label>
+        
+        <ion-badge slot="end" color="primary">
+          {{ item["temperatura"] }}°C
+        </ion-badge>
+      </ion-item>
+    </ion-list>
+
+    <!-- Estado vazio para histórico -->
+    <div class="empty-state" *ngIf="historicoDia.length === 0">
+      <ion-icon name="time-outline"></ion-icon>
+      <h3>Nenhum histórico disponível</h3>
+      <p>Não há registros para hoje</p>
+    </div>
+  </div>
+
+ 
+  <ion-grid class="historico-grid">
+    <ion-row>
+      <ion-col size="12" size-md="6" *ngFor="let item of historicoDia">
+        <ion-card class="historico-card">
+          <ion-card-header>
+            <ion-card-title>{{ item["nome"] }}</ion-card-title>
+            <ion-card-subtitle>{{ item["timestamp"] }}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="historico-data">
+              <div class="data-row">
+                <ion-icon name="thermometer-outline" color="danger"></ion-icon>
+                <span>{{ item["temperatura"] }}°C</span>
+              </div>
+              <div class="data-row">
+                <ion-icon name="water-outline" color="primary"></ion-icon>
+                <span>{{ item["umidade"] }}%</span>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+ 
+
 </ion-content>
