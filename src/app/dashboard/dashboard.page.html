@@ -4,10 +4,22 @@
   </ion-toolbar>
 </ion-header>
 
+
+
+
+
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">dashboard</ion-title>
     </ion-toolbar>
   </ion-header>
+
+
+<div *ngFor="let i of dados">
+  <p>temperatura: {{i["temperatura"]}}</p>
+  <p>umidade: {{i["umidade"]}}</p>
+  <p>timestamp: {{i["nome"]}}</p>
+  <p>timestamp: {{i["timestamp"]}}</p>
+</div>
 </ion-content>
