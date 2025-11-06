@@ -11,7 +11,7 @@
     </ion-toolbar>
   </ion-header>
 
-  <!-- Seção do Calendário -->
+ 
   <ion-card>
     <ion-card-header>
       <ion-card-title>
@@ -20,19 +20,18 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <!-- Botão para mostrar/ocultar calendário -->
+
       <ion-button expand="block" (click)="toggleCalendario()">
         <ion-icon slot="start" name="calendar"></ion-icon>
         {{ dataSelecionada ? formatarData(dataSelecionada) : 'Selecionar Data' }}
       </ion-button>
 
-      <!-- Botão para limpar filtro -->
       <ion-button expand="block" fill="outline" (click)="limparFiltro()" *ngIf="dataSelecionada">
         <ion-icon slot="start" name="close-circle-outline"></ion-icon>
         Mostrar Todos os Dados
       </ion-button>
 
-      <!-- Datetime inline -->
+   
       <ion-datetime 
         *ngIf="exibirCalendario"
         presentation="date"
