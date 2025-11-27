@@ -1,37 +1,46 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-title>Dashboard de Sensores</ion-title>
+    <ion-title>
+      <ion-icon name="analytics-outline" class="header-icon"></ion-icon>
+      Dashboard de Sensores
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="ion-padding">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Dashboard</ion-title>
     </ion-toolbar>
   </ion-header>
 
- 
-  <ion-card>
+  <!-- Card de Filtro com design melhorado -->
+  <ion-card class="filter-card">
     <ion-card-header>
-      <ion-card-title>
-        <ion-icon name="calendar-outline"></ion-icon>
+      <ion-card-title class="card-title-icon">
+        <ion-icon name="calendar-outline" class="title-icon"></ion-icon>
         Filtrar por Data
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
+      <div class="button-group">
+        <ion-button expand="block" (click)="toggleCalendario()" class="select-date-btn">
+          <ion-icon slot="start" name="calendar"></ion-icon>
+          {{ dataSelecionada ? formatarData(dataSelecionada) : 'Selecionar Data' }}
+        </ion-button>
 
-      <ion-button expand="block" (click)="toggleCalendario()">
-        <ion-icon slot="start" name="calendar"></ion-icon>
-        {{ dataSelecionada ? formatarData(dataSelecionada) : 'Selecionar Data' }}
-      </ion-button>
+        <ion-button 
+          expand="block" 
+          fill="outline" 
+          color="medium"
+          (click)="limparFiltro()" 
+          *ngIf="dataSelecionada"
+          class="clear-filter-btn">
+          <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+          Registros Totais
+        </ion-button>
+      </div>
 
-      <ion-button expand="block" fill="outline" (click)="limparFiltro()" *ngIf="dataSelecionada">
-        <ion-icon slot="start" name="close-circle-outline"></ion-icon>
-        Mostrar Todos os Dados
-      </ion-button>
-
-   
       <ion-datetime 
         *ngIf="exibirCalendario"
         presentation="date"
@@ -43,66 +52,70 @@
         class="datetime-custom">
       </ion-datetime>
       
-      <!-- Informação de registros encontrados -->
-      <ion-note color="medium">
-        <p class="ion-padding-top">
-          <ion-icon name="information-circle-outline"></ion-icon>
-          {{ dadosFiltrados.length }} registro(s) {{ dataSelecionada ? 'encontrado(s) para ' + formatarData(dataSelecionada) : 'no total' }}
-        </p>
-      </ion-note>
+      <!-- Badge de registros -->
+      <div class="records-badge" *ngIf="dadosFiltrados.length > 0">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <span>{{ dadosFiltrados.length }} registro(s) {{ dataSelecionada ? 'encontrado(s)' : 'no total' }}</span>
+      </div>
     </ion-card-content>
   </ion-card>
 
-  <!-- Lista de Dados Filtrados -->
-  <div *ngIf="dadosFiltrados.length > 0; else semDados">
-    <ion-card *ngFor="let item of dadosFiltrados">
-      <ion-card-header>
-        <ion-card-subtitle>
-          <ion-icon name="person-outline"></ion-icon>
-          {{ item.nome }}
-        </ion-card-subtitle>
-        <ion-card-title>
-          <ion-icon name="time-outline"></ion-icon>
-          {{ formatarDataHora(item.timestamp) }}
-        </ion-card-title>
-      </ion-card-header>
+  <!-- Lista de Dados com cards melhorados -->
+  <div *ngIf="dadosFiltrados.length > 0; else semDados" class="data-list">
+    <ion-card *ngFor="let item of dadosFiltrados" class="sensor-card">
+      <div class="card-header-custom">
+        <div class="user-info">
+          <div class="avatar-circle">
+            <ion-icon name="person"></ion-icon>
+          </div>
+          <div class="user-details">
+            <h3>{{ item.nome }}</h3>
+            <p class="timestamp">
+              <ion-icon name="time-outline"></ion-icon>
+              {{ formatarDataHora(item.timestamp) }}
+            </p>
+          </div>
+        </div>
+      </div>
+      
       <ion-card-content>
-        <ion-grid>
-          <ion-row>
-            <ion-col size="6">
-              <div class="sensor-info">
-                <ion-icon name="thermometer-outline" color="danger"></ion-icon>
-                <div>
-                  <p class="sensor-label">Temperatura</p>
-                  <p class="sensor-value">{{ item.temperatura }}°C</p>
-                </div>
-              </div>
-            </ion-col>
-            <ion-col size="6">
-              <div class="sensor-info">
-                <ion-icon name="water-outline" color="primary"></ion-icon>
-                <div>
-                  <p class="sensor-label">Umidade</p>
-                  <p class="sensor-value">{{ item.umidade }}%</p>
-                </div>
-              </div>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
+        <div class="sensors-grid">
+          <div class="sensor-box temperature">
+            <div class="sensor-icon-wrapper">
+              <ion-icon name="thermometer-outline"></ion-icon>
+            </div>
+            <div class="sensor-data">
+              <p class="sensor-label">Temperatura</p>
+              <p class="sensor-value">{{ item.temperatura }}<span class="unit">°C</span></p>
+            </div>
+          </div>
+          
+          <div class="sensor-box humidity">
+            <div class="sensor-icon-wrapper">
+              <ion-icon name="water-outline"></ion-icon>
+            </div>
+            <div class="sensor-data">
+              <p class="sensor-label">Umidade</p>
+              <p class="sensor-value">{{ item.umidade }}<span class="unit">%</span></p>
+            </div>
+          </div>
+        </div>
       </ion-card-content>
     </ion-card>
   </div>
 
-  <!-- Mensagem quando não há dados -->
+  <!-- Estado vazio melhorado -->
   <ng-template #semDados>
-    <ion-card>
-      <ion-card-content class="ion-text-center">
-        <ion-icon name="alert-circle-outline" color="warning" style="font-size: 64px;"></ion-icon>
+    <ion-card class="empty-state-card">
+      <ion-card-content class="empty-state">
+        <div class="empty-icon-wrapper">
+          <ion-icon name="cloud-offline-outline"></ion-icon>
+        </div>
         <h2>Nenhum dado encontrado</h2>
-        <p>Não há registros para a data selecionada: {{ formatarData(dataSelecionada) }}</p>
-        <ion-button (click)="carregarDados()" fill="outline">
+        <p>Não há registros {{ dataSelecionada ? 'para ' + formatarData(dataSelecionada) : 'disponíveis' }}</p>
+        <ion-button (click)="carregarDados()" expand="block" class="reload-btn">
           <ion-icon slot="start" name="refresh-outline"></ion-icon>
-          Recarregar
+          Recarregar Dados
         </ion-button>
       </ion-card-content>
     </ion-card>

@@ -13,7 +13,7 @@ export class Api {
 
   // Função original - GET leituras
   getSensores():Observable<any[]>{
-    return this.htpp.get<any[]>(this.apiUrl+"/api/leituras/nercelso")
+    return this.htpp.get<any[]>(this.apiUrl+"/api/leituras/tycho")
   }
   
   // NOVA FUNÇÃO - GET histórico do dia

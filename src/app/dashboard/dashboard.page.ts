@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Api } from '../api';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,10 +18,26 @@ export class DashboardPage implements OnInit {
   exibirCalendario: boolean = false;
   dataMaxima: string = new Date().toISOString();
 
+  private atualizacaoAutomatica!: Subscription;
+
   ngOnInit() {
-    this.carregarDados();
     // Define a data de hoje como padrão
     this.dataSelecionada = new Date().toISOString();
+
+    // Carrega os dados imediatamente
+    this.carregarDados();
+
+    // Atualiza automaticamente a cada 10 segundos
+    this.atualizacaoAutomatica = interval(1000).subscribe(() => {
+      console.log('🔄 Atualizando dados automaticamente...');
+      this.carregarDados();
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.atualizacaoAutomatica) {
+      this.atualizacaoAutomatica.unsubscribe();
+    }
   }
 
   carregarDados(): any {
@@ -52,6 +69,9 @@ export class DashboardPage implements OnInit {
     const mes = String(dataSelecionada.getMonth() + 1).padStart(2, '0');
     const dia = String(dataSelecionada.getDate()).padStart(2, '0');
     const dataFormatada = `${dia}/${mes}/${ano}`;
+
+
+    
 
     console.log('Filtrando por data:', dataFormatada);
     console.log('Exemplo de timestamp dos dados:', this.dados[0]?.timestamp);
