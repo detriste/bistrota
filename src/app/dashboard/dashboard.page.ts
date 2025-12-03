@@ -14,6 +14,7 @@ interface GraficoData {
   indice: number;
   nivel: number;
   umidade: number;
+  temperatura: number; // ADICIONADO
   sensor: string;
   hora: string;
 }
@@ -46,6 +47,20 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   // Estatística de umidade
   umidadeMedia: number = 0;
+
+  // ADICIONADO: Estatísticas de temperatura
+  tempMedia: number = 0;
+  tempMaxima: number = 0;
+  tempMinima: number = 0;
+
+  // ADICIONADO: Propriedades do tooltip
+  tooltipVisivel: boolean = false;
+  tooltipX: number = 0;
+  tooltipY: number = 0;
+  tooltipValor: number = 0;
+  tooltipSensor: string = '';
+  tooltipHora: string = '';
+  tooltipTipo: string = '';
 
   private atualizacaoAutomatica!: Subscription;
 
@@ -115,6 +130,7 @@ export class DashboardPage implements OnInit, OnDestroy {
       indice: index + 1,
       nivel: parseFloat(item.nivel?.toString() || '0'),
       umidade: parseFloat(item.umidade?.toString() || '0'),
+      temperatura: parseFloat(item.temperatura?.toString() || '0'), // ADICIONADO
       sensor: item.nome || `Sensor ${index + 1}`,
       hora: this.extrairHora(item.timestamp)
     }));
@@ -128,16 +144,25 @@ export class DashboardPage implements OnInit, OnDestroy {
       this.nivelMaximo = 0;
       this.nivelMinimo = 0;
       this.umidadeMedia = 0;
+      this.tempMedia = 0; // ADICIONADO
+      this.tempMaxima = 0; // ADICIONADO
+      this.tempMinima = 0; // ADICIONADO
       return;
     }
 
     const niveis = this.dadosGrafico.map(d => d.nivel);
     const umidades = this.dadosGrafico.map(d => d.umidade);
+    const temperaturas = this.dadosGrafico.map(d => d.temperatura); // ADICIONADO
 
     this.nivelMedio = parseFloat((niveis.reduce((a, b) => a + b, 0) / niveis.length).toFixed(1));
     this.nivelMaximo = Math.max(...niveis);
     this.nivelMinimo = Math.min(...niveis);
     this.umidadeMedia = parseFloat((umidades.reduce((a, b) => a + b, 0) / umidades.length).toFixed(1));
+    
+    // ADICIONADO: Cálculo de estatísticas de temperatura
+    this.tempMedia = parseFloat((temperaturas.reduce((a, b) => a + b, 0) / temperaturas.length).toFixed(1));
+    this.tempMaxima = parseFloat(Math.max(...temperaturas).toFixed(1));
+    this.tempMinima = parseFloat(Math.min(...temperaturas).toFixed(1));
   }
 
   extrairHora(timestamp: string): string {
@@ -197,7 +222,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   // Gráfico linha do nível
   gerarPontosNivel(): string {
-    return this.gerarPontos('nivel', 100); // ajuste se o nível for outro máximo
+    return this.gerarPontos('nivel', 100);
   }
 
   // Gráfico linha da umidade
@@ -205,7 +230,12 @@ export class DashboardPage implements OnInit, OnDestroy {
     return this.gerarPontos('umidade', 100);
   }
 
-  private gerarPontos(tipo: 'nivel' | 'umidade', valorMax: number): string {
+  // ADICIONADO: Gráfico linha de temperatura
+  gerarPontosTemperatura(): string {
+    return this.gerarPontos('temperatura', 30);
+  }
+
+  private gerarPontos(tipo: 'nivel' | 'umidade' | 'temperatura', valorMax: number): string {
     if (this.dadosGrafico.length === 0) return '';
 
     const pontos: string[] = [];
@@ -236,5 +266,40 @@ export class DashboardPage implements OnInit, OnDestroy {
     if (umidade < 50) return '#f59e0b';
     if (umidade < 70) return '#3b82f6';
     return '#10b981';
+  }
+
+  // ADICIONADO: Função para cor da temperatura
+  getCorTemperatura(temperatura: number): string {
+    if (temperatura < 10) return '#3b82f6'; // frio - azul
+    if (temperatura < 20) return '#10b981'; // agradável - verde
+    if (temperatura < 28) return '#f59e0b'; // morno - laranja
+    return '#ef4444'; // quente - vermelho
+  }
+
+  // ADICIONADO: Função para mostrar tooltip
+  mostrarTooltip(item: GraficoData, index: number, tipo: string) {
+    const largura = 340;
+    const espacamento = largura / (this.dadosGrafico.length + 1);
+    const margemEsquerda = 40;
+    
+    this.tooltipX = margemEsquerda + (index + 1) * espacamento;
+    
+    if (tipo === 'temperatura') {
+      this.tooltipY = 160 - (item.temperatura / 30) * 140;
+      this.tooltipValor = item.temperatura;
+    } else if (tipo === 'umidade') {
+      this.tooltipY = 160 - (item.umidade / 100) * 140;
+      this.tooltipValor = item.umidade;
+    }
+    
+    this.tooltipSensor = item.sensor;
+    this.tooltipHora = item.hora;
+    this.tooltipTipo = tipo;
+    this.tooltipVisivel = true;
+  }
+
+  // ADICIONADO: Função para esconder tooltip
+  esconderTooltip() {
+    this.tooltipVisivel = false;
   }
 }
