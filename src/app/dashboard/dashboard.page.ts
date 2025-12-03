@@ -13,7 +13,6 @@ interface GraficoData {
   indice: number;
   temperatura: number;
   umidade: number;
-  temperatura: number; // ADICIONADO
   sensor: string;
   hora: string;
 }
@@ -133,7 +132,6 @@ export class DashboardPage implements OnInit, OnDestroy {
       indice: index + 1,
       temperatura: parseFloat(item.temperatura?.toString() || '0'),
       umidade: parseFloat(item.umidade?.toString() || '0'),
-      temperatura: parseFloat(item.temperatura?.toString() || '0'), // ADICIONADO
       sensor: item.nome || `Sensor ${index + 1}`,
       hora: this.extrairHora(item.timestamp)
     }));
@@ -150,25 +148,16 @@ export class DashboardPage implements OnInit, OnDestroy {
       this.tempMaxima = 0;
       this.tempMinima = 0;
       this.umidadeMedia = 0;
-      this.tempMedia = 0; // ADICIONADO
-      this.tempMaxima = 0; // ADICIONADO
-      this.tempMinima = 0; // ADICIONADO
       return;
     }
 
     const temperaturas = this.dadosGrafico.map(d => d.temperatura);
     const umidades = this.dadosGrafico.map(d => d.umidade);
-    const temperaturas = this.dadosGrafico.map(d => d.temperatura); // ADICIONADO
 
     this.tempMedia = parseFloat((temperaturas.reduce((a, b) => a + b, 0) / temperaturas.length).toFixed(1));
     this.tempMaxima = Math.max(...temperaturas);
     this.tempMinima = Math.min(...temperaturas);
     this.umidadeMedia = parseFloat((umidades.reduce((a, b) => a + b, 0) / umidades.length).toFixed(1));
-    
-    // ADICIONADO: Cálculo de estatísticas de temperatura
-    this.tempMedia = parseFloat((temperaturas.reduce((a, b) => a + b, 0) / temperaturas.length).toFixed(1));
-    this.tempMaxima = parseFloat(Math.max(...temperaturas).toFixed(1));
-    this.tempMinima = parseFloat(Math.min(...temperaturas).toFixed(1));
   }
 
   extrairHora(timestamp: string): string {
