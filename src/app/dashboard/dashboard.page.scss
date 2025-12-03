@@ -129,9 +129,7 @@ ion-card-header, .card-header-custom {
   border-bottom: 1px solid rgba(0, 0, 0, 0.4);
   
   .card-title-icon {
-    display: flex;
-    align-items: center;
-    font-size: 18px;
+    font-size: 23px;
     font-weight: 600;
     color: white;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -158,100 +156,16 @@ ion-button {
   }
 }
 
-// Legenda do Gráfico - Reduzida
-.chart-legend {
-  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-  border-radius: 12px;
-  padding: 12px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  align-items: center;
-  justify-content: center;
-
-  @media (max-width: 576px) {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    font-weight: 500;
-    color: #374151;
-
-    .legend-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-
-      &.temp {
-        background: #f97316;
-      }
-
-      &.humidity {
-        background: #06b6d4;
-      }
-    }
-  }
-
-  .legend-info {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 11px;
-    color: #6b7280;
-    margin-left: auto;
-
-    @media (max-width: 576px) {
-      margin-left: 0;
-    }
-
-    ion-icon {
-      font-size: 14px;
-      color: #3b82f6;
-    }
-  }
+/* Gráficos e legenda */
+.chart-wrapper, .chart-legend {
+  border-radius: 28px !important;
+  padding: 24px !important;
+  margin: 16px !important;
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(14px);
 }
 
-// Animação de hover nos gráficos
-@keyframes chartPointPulse {
-  0% {
-    r: 4;
-  }
-  50% {
-    r: 6;
-  }
-  100% {
-    r: 4;
-  }
-}
-
-.chart-point {
-  &:hover {
-    animation: chartPointPulse 0.6s ease-in-out;
-  }
-}
-
-// Animação de entrada
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.chart-card {
-  animation: slideIn 0.5s ease-out;
-}
-
-// Responsividade geral
+/* Responsivo perfeito */
 @media (max-width: 576px) {
   .stat-value, .sensor-value { font-size: 30px !important; }
   .stat-value .unit, .sensor-value .unit { font-size: 17px !important; }
