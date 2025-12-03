@@ -14,7 +14,7 @@
     </ion-toolbar>
   </ion-header>
 
-  <!-- Card de Filtro com design melhorado -->
+  <!-- Card de Filtro -->
   <ion-card class="filter-card">
     <ion-card-header>
       <ion-card-title class="card-title-icon">
@@ -46,13 +46,11 @@
         presentation="date"
         [(ngModel)]="dataSelecionada"
         (ionChange)="onDataChange($event)"
-        [preferWheel]="false"
         locale="pt-BR"
         [max]="dataMaxima"
         class="datetime-custom">
       </ion-datetime>
-      
-      <!-- Badge de registros -->
+
       <div class="records-badge" *ngIf="dadosFiltrados.length > 0">
         <ion-icon name="document-text-outline"></ion-icon>
         <span>{{ dadosFiltrados.length }} registro(s) {{ dataSelecionada ? 'encontrado(s)' : 'no total' }}</span>
@@ -316,7 +314,7 @@
       <div class="card-header-custom">
         <div class="user-info">
           <div class="avatar-circle">
-            <ion-icon name="person"></ion-icon>
+            <ion-icon name="hardware-chip-outline"></ion-icon>
           </div>
           <div class="user-details">
             <h3>{{ item.nome }}</h3>
@@ -327,47 +325,43 @@
           </div>
         </div>
       </div>
-      
+
       <ion-card-content>
         <div class="sensors-grid">
-          <div class="sensor-box temperature">
+
+          <!-- BOX NÍVEL -->
+          <div class="sensor-box nivel">
             <div class="sensor-icon-wrapper">
-              <ion-icon name="thermometer-outline"></ion-icon>
+              <ion-icon name="speedometer-outline"></ion-icon>
             </div>
             <div class="sensor-data">
-              <p class="sensor-label">Temperatura</p>
-              <p class="sensor-value">{{ item.temperatura }}<span class="unit">°C</span></p>
+              <p class="sensor-label">Nível</p>
+              <p class="sensor-value">{{ item.nivel }}
+                <span class="unit">%</span>
+              </p>
             </div>
           </div>
-          
+
+          <!-- BOX UMIDADE -->
           <div class="sensor-box humidity">
             <div class="sensor-icon-wrapper">
               <ion-icon name="water-outline"></ion-icon>
             </div>
             <div class="sensor-data">
               <p class="sensor-label">Umidade</p>
-              <p class="sensor-value">{{ item.umidade }}<span class="unit">%</span></p>
+              <p class="sensor-value">{{ item.umidade }}
+                <span class="unit">%</span>
+              </p>
             </div>
           </div>
+
         </div>
       </ion-card-content>
-    </ion-card>
 
-    <!-- Botão Mostrar Mais -->
-    <div class="show-more-container" *ngIf="dadosFiltrados.length > 2">
-      <ion-button 
-        expand="block" 
-        fill="outline" 
-        color="primary"
-        (click)="toggleMostrarMais()"
-        class="show-more-btn">
-        <ion-icon slot="start" [name]="mostrarTodos ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
-        {{ mostrarTodos ? 'Mostrar Menos' : 'Mostrar Mais (' + (dadosFiltrados.length - 2) + ')' }}
-      </ion-button>
-    </div>
+    </ion-card>
   </div>
 
-  <!-- Estado vazio melhorado -->
+  <!-- Empty State -->
   <ng-template #semDados>
     <ion-card class="empty-state-card">
       <ion-card-content class="empty-state">
