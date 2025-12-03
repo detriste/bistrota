@@ -154,7 +154,54 @@
               [attr.fill]="getCorTemperatura(item.temperatura)"
               stroke="white"
               stroke-width="2"
-              class="chart-point"/>
+              class="chart-point"
+              (click)="mostrarTooltip(item, i, 'temperatura')"/>
+
+            <!-- Tooltip -->
+            <g *ngIf="tooltipVisivel && tooltipTipo === 'temperatura'" class="tooltip-group">
+              <rect 
+                [attr.x]="tooltipX - 45" 
+                [attr.y]="tooltipY - 50" 
+                width="90" 
+                height="45" 
+                rx="6"
+                fill="white"
+                stroke="#f97316"
+                stroke-width="2"
+                filter="url(#shadow)"/>
+              <text 
+                [attr.x]="tooltipX" 
+                [attr.y]="tooltipY - 32" 
+                text-anchor="middle" 
+                font-size="12" 
+                font-weight="bold"
+                fill="#d97706">
+                {{ tooltipValor }}°C
+              </text>
+              <text 
+                [attr.x]="tooltipX" 
+                [attr.y]="tooltipY - 18" 
+                text-anchor="middle" 
+                font-size="9" 
+                fill="#6b7280">
+                {{ tooltipSensor }}
+              </text>
+              <text 
+                [attr.x]="tooltipX" 
+                [attr.y]="tooltipY - 8" 
+                text-anchor="middle" 
+                font-size="9" 
+                fill="#6b7280">
+                {{ tooltipHora }}
+              </text>
+            </g>
+
+            <!-- Filtro de sombra -->
+            <defs>
+              <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+              </filter>
+            </defs>
           </svg>
         </div>
 
@@ -197,7 +244,54 @@
               [attr.fill]="getCorUmidade(item.umidade)"
               stroke="white"
               stroke-width="2"
-              class="chart-point"/>
+              class="chart-point"
+              (click)="mostrarTooltip(item, i, 'umidade')"/>
+
+            <!-- Tooltip -->
+            <g *ngIf="tooltipVisivel && tooltipTipo === 'umidade'" class="tooltip-group">
+              <rect 
+                [attr.x]="tooltipX - 45" 
+                [attr.y]="tooltipY - 50" 
+                width="90" 
+                height="45" 
+                rx="6"
+                fill="white"
+                stroke="#06b6d4"
+                stroke-width="2"
+                filter="url(#shadow2)"/>
+              <text 
+                [attr.x]="tooltipX" 
+                [attr.y]="tooltipY - 32" 
+                text-anchor="middle" 
+                font-size="12" 
+                font-weight="bold"
+                fill="#0284c7">
+                {{ tooltipValor }}%
+              </text>
+              <text 
+                [attr.x]="tooltipX" 
+                [attr.y]="tooltipY - 18" 
+                text-anchor="middle" 
+                font-size="9" 
+                fill="#6b7280">
+                {{ tooltipSensor }}
+              </text>
+              <text 
+                [attr.x]="tooltipX" 
+                [attr.y]="tooltipY - 8" 
+                text-anchor="middle" 
+                font-size="9" 
+                fill="#6b7280">
+                {{ tooltipHora }}
+              </text>
+            </g>
+
+            <!-- Filtro de sombra -->
+            <defs>
+              <filter id="shadow2" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+              </filter>
+            </defs>
           </svg>
         </div>
       </div>
@@ -221,7 +315,7 @@
   </ion-card>
 
   <!-- Lista de Dados com cards melhorados -->
-  <div *ngIf="dadosFiltrados.length > 0; else semDados" class="data-list">
+  <div *ngIf="dadosFiltrados.length > 0; else semDados" class="data-list" (click)="esconderTooltip()">
     <ion-card *ngFor="let item of dadosFiltradosVisiveis" class="sensor-card">
       <div class="card-header-custom">
         <div class="user-info">

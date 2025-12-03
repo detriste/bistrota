@@ -44,6 +44,15 @@ export class DashboardPage implements OnInit, OnDestroy {
   tempMinima: number = 0;
   umidadeMedia: number = 0;
 
+  // Controle do tooltip
+  tooltipVisivel: boolean = false;
+  tooltipTipo: 'temperatura' | 'umidade' = 'temperatura';
+  tooltipValor: number = 0;
+  tooltipSensor: string = '';
+  tooltipHora: string = '';
+  tooltipX: number = 0;
+  tooltipY: number = 0;
+
   private atualizacaoAutomatica!: Subscription;
 
   ngOnInit() {
@@ -253,5 +262,28 @@ export class DashboardPage implements OnInit, OnDestroy {
     if (umidade < 50) return '#f59e0b'; // Amarelo
     if (umidade < 70) return '#3b82f6'; // Azul
     return '#10b981'; // Verde úmido
+  }
+
+  // Mostra o tooltip ao clicar em um ponto
+  mostrarTooltip(item: GraficoData, index: number, tipo: 'temperatura' | 'umidade') {
+    const largura = 340;
+    const espacamento = largura / (this.dadosGrafico.length + 1);
+    const margemEsquerda = 40;
+    const altura = 140;
+    const margemTop = 20;
+    const valorMax = tipo === 'temperatura' ? 30 : 100;
+
+    this.tooltipTipo = tipo;
+    this.tooltipValor = tipo === 'temperatura' ? item.temperatura : item.umidade;
+    this.tooltipSensor = item.sensor;
+    this.tooltipHora = item.hora;
+    this.tooltipX = margemEsquerda + (index + 1) * espacamento;
+    this.tooltipY = margemTop + altura - (this.tooltipValor / valorMax) * altura;
+    this.tooltipVisivel = true;
+  }
+
+  // Esconde o tooltip
+  esconderTooltip() {
+    this.tooltipVisivel = false;
   }
 }
