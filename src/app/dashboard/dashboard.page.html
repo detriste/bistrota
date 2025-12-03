@@ -141,7 +141,7 @@
               [attr.points]="gerarPontosTemperatura()" 
               fill="none" 
               stroke="#f97316" 
-              stroke-width="3"
+              stroke-width="5"
               stroke-linecap="round"
               stroke-linejoin="round"/>
             
@@ -184,7 +184,7 @@
               [attr.points]="gerarPontosUmidade()" 
               fill="none" 
               stroke="#06b6d4" 
-              stroke-width="3"
+              stroke-width="5"
               stroke-linecap="round"
               stroke-linejoin="round"/>
             
@@ -212,17 +212,13 @@
           <span class="legend-dot humidity"></span>
           <span>Umidade</span>
         </div>
-        <div class="legend-info">
-          <ion-icon name="information-circle-outline"></ion-icon>
-          <span>Gráficos atualizados a cada 10 segundos</span>
-        </div>
       </div>
     </ion-card-content>
   </ion-card>
 
   <!-- Lista de Dados com cards melhorados -->
   <div *ngIf="dadosFiltrados.length > 0; else semDados" class="data-list">
-    <ion-card *ngFor="let item of dadosFiltrados" class="sensor-card">
+    <ion-card *ngFor="let item of dadosFiltradosVisiveis" class="sensor-card">
       <div class="card-header-custom">
         <div class="user-info">
           <div class="avatar-circle">
@@ -262,6 +258,19 @@
         </div>
       </ion-card-content>
     </ion-card>
+
+    <!-- Botão Mostrar Mais -->
+    <div class="show-more-container" *ngIf="dadosFiltrados.length > 2">
+      <ion-button 
+        expand="block" 
+        fill="outline" 
+        color="primary"
+        (click)="toggleMostrarMais()"
+        class="show-more-btn">
+        <ion-icon slot="start" [name]="mostrarTodos ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+        {{ mostrarTodos ? 'Mostrar Menos' : 'Mostrar Mais (' + (dadosFiltrados.length - 2) + ')' }}
+      </ion-button>
+    </div>
   </div>
 
   <!-- Estado vazio melhorado -->
