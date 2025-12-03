@@ -4,15 +4,16 @@ import { interval, Subscription } from 'rxjs';
 
 interface SensorData {
   nome: string;
-  temperatura: number;
-  umidade: number;
+  nivel: number;
+  ph: number;
+  turbidez: number;
   timestamp: string;
 }
 
 interface GraficoData {
-  indice: number;
-  temperatura: number;
-  umidade: number;
+  nivel: number;
+  ph: number;
+  turbidez: number;
   sensor: string;
   hora: string;
 }
@@ -24,266 +25,115 @@ interface GraficoData {
   standalone: false
 })
 export class DashboardPage implements OnInit, OnDestroy {
-
-  constructor(private apiService: Api) { }
-
-  dados: any[] = [];
-  dadosFiltrados: any[] = [];
-  dadosFiltradosVisiveis: any[] = [];
-  mostrarTodos: boolean = false;
-  dataSelecionada: string = '';
-  exibirCalendario: boolean = false;
-  dataMaxima: string = new Date().toISOString();
-
-  // Dados para o gráfico
+  dados: SensorData[] = [];
+  dadosFiltrados: SensorData[] = [];
+  dadosFiltradosVisiveis: SensorData[] = [];
   dadosGrafico: GraficoData[] = [];
-  
-  // Estatísticas
-  tempMedia: number = 0;
-  tempMaxima: number = 0;
-  tempMinima: number = 0;
-  umidadeMedia: number = 0;
+  mostrarTodos = false;
+  dataSelecionada = '';
+  exibirCalendario = false;
+  dataMaxima = new Date().toISOString();
 
-  // Controle do tooltip
-  tooltipVisivel: boolean = false;
-  tooltipTipo: 'temperatura' | 'umidade' = 'temperatura';
-  tooltipValor: number = 0;
-  tooltipSensor: string = '';
-  tooltipHora: string = '';
-  tooltipX: number = 0;
-  tooltipY: number = 0;
+  nivelMedia = 0;
+  phMedia = 0;
+  turbidezMedia = 0;
 
-  private atualizacaoAutomatica!: Subscription;
+  tooltipVisivel = false;
+  tooltipX = 0;
+  tooltipY = 0;
+  tooltipValor = 0;
+  tooltipUnidade = '';
+  tooltipSensor = '';
+  tooltipHora = '';
+
+  private sub!: Subscription;
+
+  constructor(private apiService: Api) {}
 
   ngOnInit() {
-    // Define a data de hoje como padrão
-    this.dataSelecionada = new Date().toISOString();
-
-    // Carrega os dados imediatamente
     this.carregarDados();
-
-    // Atualiza automaticamente a cada 10 segundos
-    this.atualizacaoAutomatica = interval(10000).subscribe(() => {
-      console.log('🔄 Atualizando dados automaticamente...');
-      this.carregarDados();
-    });
+    this.sub = interval(10000).subscribe(() => this.carregarDados());
   }
 
-  ngOnDestroy() {
-    if (this.atualizacaoAutomatica) {
-      this.atualizacaoAutomatica.unsubscribe();
-    }
-  }
+  ngOnDestroy() { this.sub?.unsubscribe(); }
 
-  carregarDados(): any {
-    this.apiService.getSensores().subscribe({
-      next: (data: any[]) => {
-        console.log('Dados recebidos da API:', data);
-        this.dados = data;
-        // Mostra todos os dados inicialmente
-        this.dadosFiltrados = data;
-        // Filtra os dados após carregar se houver data selecionada
-        if (this.dataSelecionada) {
-          this.filtrarPorData(this.dataSelecionada);
-        }
-        // Atualiza a lista visível
-        this.atualizarListaVisivel();
-        // Atualiza o gráfico com os novos dados
-        this.atualizarGrafico();
-      }, error: (err) => {
-        console.log('Erro ao carregar dados:', err);
-      }
-    });
-  }
-
-  filtrarPorData(dataISO: string) {
-    if (!dataISO || this.dados.length === 0) {
-      this.dadosFiltrados = this.dados;
-      console.log('Sem filtro aplicado. Total de dados:', this.dados.length);
+  carregarDados() {
+    this.apiService.getSensores().subscribe((data: any[]) => {
+      this.dados = data as SensorData[];
+      this.dadosFiltrados = [...this.dados];
+      if (this.dataSelecionada) this.filtrarPorData(this.dataSelecionada);
+      else this.atualizarGrafico();
       this.atualizarListaVisivel();
-      this.atualizarGrafico();
-      return;
-    }
-
-    const dataSelecionada = new Date(dataISO);
-    const ano = dataSelecionada.getFullYear();
-    const mes = String(dataSelecionada.getMonth() + 1).padStart(2, '0');
-    const dia = String(dataSelecionada.getDate()).padStart(2, '0');
-    const dataFormatada = `${dia}/${mes}/${ano}`;
-
-    console.log('Filtrando por data:', dataFormatada);
-
-    this.dadosFiltrados = this.dados.filter(item => {
-      if (item.timestamp) {
-        const dataItemString = item.timestamp.split(',')[0].trim();
-        return dataItemString === dataFormatada;
-      }
-      return false;
     });
+  }
 
-    console.log(`Dados filtrados para ${dataFormatada}:`, this.dadosFiltrados.length);
-    this.atualizarListaVisivel();
+  filtrarPorData(iso: string) {
+    const d = new Date(iso);
+    const str = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+    this.dadosFiltrados = this.dados.filter(x => x.timestamp?.startsWith(str));
     this.atualizarGrafico();
+    this.atualizarListaVisivel();
   }
 
   atualizarGrafico() {
-    // Transforma os dados filtrados para o formato do gráfico
-    this.dadosGrafico = this.dadosFiltrados.map((item, index) => ({
-      indice: index + 1,
-      temperatura: parseFloat(item.temperatura?.toString() || '0'),
-      umidade: parseFloat(item.umidade?.toString() || '0'),
-      sensor: item.nome || `Sensor ${index + 1}`,
-      hora: this.extrairHora(item.timestamp)
+    this.dadosGrafico = this.dadosFiltrados.map((item, i) => ({
+      nivel: +item.nivel || 0,
+      ph: +item.ph || 7,
+      turbidez: +item.turbidez || 0,
+      sensor: item.nome || `Sensor ${i+1}`,
+      hora: item.timestamp?.split(',')[1]?.trim().substring(0,5) || ''
     }));
 
-    // Calcula as estatísticas
-    this.calcularEstatisticas();
+    const n = this.dadosGrafico.map(x => x.nivel);
+    const p = this.dadosGrafico.map(x => x.ph);
+    const t = this.dadosGrafico.map(x => x.turbidez);
 
-    console.log('Dados do gráfico atualizados:', this.dadosGrafico);
+    this.nivelMedia = n.length ? +(n.reduce((a,b)=>a+b)/n.length).toFixed(1) : 0;
+    this.phMedia = p.length ? +(p.reduce((a,b)=>a+b)/p.length).toFixed(2) : 0;
+    this.turbidezMedia = t.length ? +(t.reduce((a,b)=>a+b)/t.length).toFixed(1) : 0;
   }
 
-  calcularEstatisticas() {
-    if (this.dadosGrafico.length === 0) {
-      this.tempMedia = 0;
-      this.tempMaxima = 0;
-      this.tempMinima = 0;
-      this.umidadeMedia = 0;
-      return;
-    }
+  // Gráficos
+  gerarPontosNivel() { return this.gerarPontos('nivel', 100); }
+  gerarPontosPh() { return this.gerarPontos('ph', 14); }
+  gerarPontosTurbidez() { return this.gerarPontos('turbidez', 100); }
 
-    const temperaturas = this.dadosGrafico.map(d => d.temperatura);
-    const umidades = this.dadosGrafico.map(d => d.umidade);
-
-    this.tempMedia = parseFloat((temperaturas.reduce((a, b) => a + b, 0) / temperaturas.length).toFixed(1));
-    this.tempMaxima = Math.max(...temperaturas);
-    this.tempMinima = Math.min(...temperaturas);
-    this.umidadeMedia = parseFloat((umidades.reduce((a, b) => a + b, 0) / umidades.length).toFixed(1));
+  private gerarPontos(campo: 'nivel'|'ph'|'turbidez', max: number) {
+    if (!this.dadosGrafico.length) return '';
+    return this.dadosGrafico.map((d, i) => {
+      const x = 40 + (i + 1) * (340 / (this.dadosGrafico.length + 1));
+      const valor = campo === 'ph' ? d.ph : campo === 'turbidez' ? d.turbidez : d.nivel;
+      const y = 160 - (valor / max) * 140;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
   }
 
-  extrairHora(timestamp: string): string {
-    if (!timestamp) return '';
-    // Formato: "23/10/2025, 14:45:35" -> "14:45"
-    const partes = timestamp.split(',');
-    if (partes.length > 1) {
-      const hora = partes[1].trim().split(':');
-      return `${hora[0]}:${hora[1]}`;
-    }
-    return '';
-  }
+  // Cores inteligentes
+  getCorNivel(v: number) { return v < 30 ? '#ef4444' : v < 70 ? '#f59e0b' : '#10b981'; }
+  getCorPh(v: number) { return v < 6.5 ? '#ef4444' : v > 8.5 ? '#3b82f6' : '#10b981'; }
+  getCorTurbidez(v: number) { return v > 50 ? '#ef4444' : v > 20 ? '#f59e0b' : '#10b981'; }
 
-  onDataChange(event: any) {
-    this.dataSelecionada = event.detail.value;
-    this.filtrarPorData(this.dataSelecionada);
-    this.exibirCalendario = false;
-  }
+  mostrarTooltip(item: GraficoData, i: number, tipo: 'nivel'|'ph'|'turbidez') {
+    const max = tipo === 'ph' ? 14 : 100;
+    const valor = tipo === 'ph' ? item.ph : tipo === 'turbidez' ? item.turbidez : item.nivel;
 
-  toggleCalendario() {
-    this.exibirCalendario = !this.exibirCalendario;
-  }
-
-  limparFiltro() {
-    this.dataSelecionada = '';
-    this.dadosFiltrados = this.dados;
-    this.atualizarListaVisivel();
-    this.atualizarGrafico();
-    this.exibirCalendario = false;
-    console.log('Filtro removido. Mostrando todos os dados:', this.dadosFiltrados.length);
-  }
-
-  toggleMostrarMais() {
-    this.mostrarTodos = !this.mostrarTodos;
-    this.atualizarListaVisivel();
-  }
-
-  atualizarListaVisivel() {
-    if (this.mostrarTodos) {
-      this.dadosFiltradosVisiveis = this.dadosFiltrados;
-    } else {
-      this.dadosFiltradosVisiveis = this.dadosFiltrados.slice(0, 2);
-    }
-  }
-
-  formatarData(dataISO: string): string {
-    if (!dataISO) return '';
-    const data = new Date(dataISO);
-    const dia = String(data.getDate()).padStart(2, '0');
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const ano = data.getFullYear();
-    return `${dia}/${mes}/${ano}`;
-  }
-
-  formatarDataHora(timestampBR: string): string {
-    if (!timestampBR) return '';
-    return timestampBR;
-  }
-
-  // Gera os pontos do gráfico de temperatura
-  gerarPontosTemperatura(): string {
-    return this.gerarPontos('temperatura', 30);
-  }
-
-  // Gera os pontos do gráfico de umidade
-  gerarPontosUmidade(): string {
-    return this.gerarPontos('umidade', 100);
-  }
-
-  // Método auxiliar para gerar pontos
-  private gerarPontos(tipo: 'temperatura' | 'umidade', valorMax: number): string {
-    if (this.dadosGrafico.length === 0) return '';
-
-    const pontos: string[] = [];
-    const largura = 340;
-    const altura = 140;
-    const espacamento = largura / (this.dadosGrafico.length + 1);
-    const margemEsquerda = 40;
-    const margemTop = 20;
-
-    this.dadosGrafico.forEach((item, index) => {
-      const valor = item[tipo];
-      const x = margemEsquerda + (index + 1) * espacamento;
-      const y = margemTop + altura - (valor / valorMax) * altura;
-      pontos.push(`${x.toFixed(1)},${y.toFixed(1)}`);
-    });
-
-    return pontos.join(' ');
-  }
-
-  // Obtém a cor baseada no valor de temperatura
-  getCorTemperatura(temp: number): string {
-    if (temp < 15) return '#3b82f6'; // Azul frio
-    if (temp < 20) return '#10b981'; // Verde
-    if (temp < 25) return '#f59e0b'; // Amarelo
-    return '#ef4444'; // Vermelho quente
-  }
-
-  // Obtém a cor baseada no valor de umidade
-  getCorUmidade(umidade: number): string {
-    if (umidade < 30) return '#ef4444'; // Vermelho seco
-    if (umidade < 50) return '#f59e0b'; // Amarelo
-    if (umidade < 70) return '#3b82f6'; // Azul
-    return '#10b981'; // Verde úmido
-  }
-
-  // Mostra o tooltip ao clicar em um ponto
-  mostrarTooltip(item: GraficoData, index: number, tipo: 'temperatura' | 'umidade') {
-    const largura = 340;
-    const espacamento = largura / (this.dadosGrafico.length + 1);
-    const margemEsquerda = 40;
-    const altura = 140;
-    const margemTop = 20;
-    const valorMax = tipo === 'temperatura' ? 30 : 100;
-
-    this.tooltipTipo = tipo;
-    this.tooltipValor = tipo === 'temperatura' ? item.temperatura : item.umidade;
+    this.tooltipValor = tipo === 'ph' ? parseFloat(valor.toFixed(2)) : valor;
+    this.tooltipUnidade = tipo === 'ph' ? '' : tipo === 'turbidez' ? ' NTU' : ' %';
     this.tooltipSensor = item.sensor;
     this.tooltipHora = item.hora;
-    this.tooltipX = margemEsquerda + (index + 1) * espacamento;
-    this.tooltipY = margemTop + altura - (this.tooltipValor / valorMax) * altura;
+    this.tooltipX = 40 + (i + 1) * (340 / (this.dadosGrafico.length + 1));
+    this.tooltipY = 160 - (valor / max) * 140 + 60;
     this.tooltipVisivel = true;
   }
 
-  // Esconde o tooltip
-  esconderTooltip() {
-    this.tooltipVisivel = false;
-  }
+  esconderTooltip() { this.tooltipVisivel = false; }
+
+  // Utilitários
+  onDataChange(e: any) { this.dataSelecionada = e.detail.value; this.filtrarPorData(this.dataSelecionada); this.exibirCalendario = false; }
+  limparFiltro() { this.dataSelecionada = ''; this.dadosFiltrados = [...this.dados]; this.atualizarGrafico(); this.atualizarListaVisivel(); }
+  toggleCalendario() { this.exibirCalendario = !this.exibirCalendario; }
+  toggleMostrarMais() { this.mostrarTodos = !this.mostrarTodos; this.atualizarListaVisivel(); }
+  atualizarListaVisivel() { this.dadosFiltradosVisiveis = this.mostrarTodos ? this.dadosFiltrados : this.dadosFiltrados.slice(0, 2); }
+  formatarData(iso: string) { const d = new Date(iso); return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
+  formatarDataHora(ts: string) { return ts || ''; }
 }
