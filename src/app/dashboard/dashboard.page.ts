@@ -1,6 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Api } from '../api';
 import { interval, Subscription } from 'rxjs';
+
+interface SensorData {
+  nome: string;
+  temperatura: number;
+  umidade: number;
+  timestamp: string;
+}
+
+interface GraficoData {
+  indice: number;
+  temperatura: number;
+  umidade: number;
+  sensor: string;
+  hora: string;
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -8,7 +23,7 @@ import { interval, Subscription } from 'rxjs';
   styleUrls: ['./dashboard.page.scss'],
   standalone: false
 })
-export class DashboardPage implements OnInit {
+export class DashboardPage implements OnInit, OnDestroy {
 
   constructor(private apiService: Api) { }
 
@@ -17,6 +32,15 @@ export class DashboardPage implements OnInit {
   dataSelecionada: string = '';
   exibirCalendario: boolean = false;
   dataMaxima: string = new Date().toISOString();
+
+  // Dados para o gráfico
+  dadosGrafico: GraficoData[] = [];
+  
+  // Estatísticas
+  tempMedia: number = 0;
+  tempMaxima: number = 0;
+  tempMinima: number = 0;
+  umidadeMedia: number = 0;
 
   private atualizacaoAutomatica!: Subscription;
 
@@ -28,7 +52,7 @@ export class DashboardPage implements OnInit {
     this.carregarDados();
 
     // Atualiza automaticamente a cada 10 segundos
-    this.atualizacaoAutomatica = interval(1000).subscribe(() => {
+    this.atualizacaoAutomatica = interval(10000).subscribe(() => {
       console.log('🔄 Atualizando dados automaticamente...');
       this.carregarDados();
     });
@@ -51,6 +75,8 @@ export class DashboardPage implements OnInit {
         if (this.dataSelecionada) {
           this.filtrarPorData(this.dataSelecionada);
         }
+        // Atualiza o gráfico com os novos dados
+        this.atualizarGrafico();
       }, error: (err) => {
         console.log('Erro ao carregar dados:', err);
       }
@@ -61,6 +87,7 @@ export class DashboardPage implements OnInit {
     if (!dataISO || this.dados.length === 0) {
       this.dadosFiltrados = this.dados;
       console.log('Sem filtro aplicado. Total de dados:', this.dados.length);
+      this.atualizarGrafico();
       return;
     }
 
@@ -70,25 +97,63 @@ export class DashboardPage implements OnInit {
     const dia = String(dataSelecionada.getDate()).padStart(2, '0');
     const dataFormatada = `${dia}/${mes}/${ano}`;
 
-
-    
-
     console.log('Filtrando por data:', dataFormatada);
-    console.log('Exemplo de timestamp dos dados:', this.dados[0]?.timestamp);
 
     this.dadosFiltrados = this.dados.filter(item => {
       if (item.timestamp) {
-        // O timestamp vem no formato "23/10/2025, 14:45:35"
-        // Vamos pegar apenas a parte da data (antes da vírgula)
         const dataItemString = item.timestamp.split(',')[0].trim();
-        
-        console.log('Comparando:', dataItemString, '===', dataFormatada);
         return dataItemString === dataFormatada;
       }
       return false;
     });
 
     console.log(`Dados filtrados para ${dataFormatada}:`, this.dadosFiltrados.length);
+    this.atualizarGrafico();
+  }
+
+  atualizarGrafico() {
+    // Transforma os dados filtrados para o formato do gráfico
+    this.dadosGrafico = this.dadosFiltrados.map((item, index) => ({
+      indice: index + 1,
+      temperatura: parseFloat(item.temperatura?.toString() || '0'),
+      umidade: parseFloat(item.umidade?.toString() || '0'),
+      sensor: item.nome || `Sensor ${index + 1}`,
+      hora: this.extrairHora(item.timestamp)
+    }));
+
+    // Calcula as estatísticas
+    this.calcularEstatisticas();
+
+    console.log('Dados do gráfico atualizados:', this.dadosGrafico);
+  }
+
+  calcularEstatisticas() {
+    if (this.dadosGrafico.length === 0) {
+      this.tempMedia = 0;
+      this.tempMaxima = 0;
+      this.tempMinima = 0;
+      this.umidadeMedia = 0;
+      return;
+    }
+
+    const temperaturas = this.dadosGrafico.map(d => d.temperatura);
+    const umidades = this.dadosGrafico.map(d => d.umidade);
+
+    this.tempMedia = parseFloat((temperaturas.reduce((a, b) => a + b, 0) / temperaturas.length).toFixed(1));
+    this.tempMaxima = Math.max(...temperaturas);
+    this.tempMinima = Math.min(...temperaturas);
+    this.umidadeMedia = parseFloat((umidades.reduce((a, b) => a + b, 0) / umidades.length).toFixed(1));
+  }
+
+  extrairHora(timestamp: string): string {
+    if (!timestamp) return '';
+    // Formato: "23/10/2025, 14:45:35" -> "14:45"
+    const partes = timestamp.split(',');
+    if (partes.length > 1) {
+      const hora = partes[1].trim().split(':');
+      return `${hora[0]}:${hora[1]}`;
+    }
+    return '';
   }
 
   onDataChange(event: any) {
@@ -104,6 +169,7 @@ export class DashboardPage implements OnInit {
   limparFiltro() {
     this.dataSelecionada = '';
     this.dadosFiltrados = this.dados;
+    this.atualizarGrafico();
     this.exibirCalendario = false;
     console.log('Filtro removido. Mostrando todos os dados:', this.dadosFiltrados.length);
   }
@@ -119,7 +185,53 @@ export class DashboardPage implements OnInit {
 
   formatarDataHora(timestampBR: string): string {
     if (!timestampBR) return '';
-    // O timestamp já vem formatado do backend: "23/10/2025, 14:45:35"
     return timestampBR;
+  }
+
+  // Gera os pontos do gráfico de temperatura
+  gerarPontosTemperatura(): string {
+    return this.gerarPontos('temperatura', 30);
+  }
+
+  // Gera os pontos do gráfico de umidade
+  gerarPontosUmidade(): string {
+    return this.gerarPontos('umidade', 100);
+  }
+
+  // Método auxiliar para gerar pontos
+  private gerarPontos(tipo: 'temperatura' | 'umidade', valorMax: number): string {
+    if (this.dadosGrafico.length === 0) return '';
+
+    const pontos: string[] = [];
+    const largura = 340;
+    const altura = 140;
+    const espacamento = largura / (this.dadosGrafico.length + 1);
+    const margemEsquerda = 40;
+    const margemTop = 20;
+
+    this.dadosGrafico.forEach((item, index) => {
+      const valor = item[tipo];
+      const x = margemEsquerda + (index + 1) * espacamento;
+      const y = margemTop + altura - (valor / valorMax) * altura;
+      pontos.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+    });
+
+    return pontos.join(' ');
+  }
+
+  // Obtém a cor baseada no valor de temperatura
+  getCorTemperatura(temp: number): string {
+    if (temp < 15) return '#3b82f6'; // Azul frio
+    if (temp < 20) return '#10b981'; // Verde
+    if (temp < 25) return '#f59e0b'; // Amarelo
+    return '#ef4444'; // Vermelho quente
+  }
+
+  // Obtém a cor baseada no valor de umidade
+  getCorUmidade(umidade: number): string {
+    if (umidade < 30) return '#ef4444'; // Vermelho seco
+    if (umidade < 50) return '#f59e0b'; // Amarelo
+    if (umidade < 70) return '#3b82f6'; // Azul
+    return '#10b981'; // Verde úmido
   }
 }
