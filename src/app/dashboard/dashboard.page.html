@@ -89,8 +89,8 @@
           <svg viewBox="0 0 420 200" class="chart-svg">
             <polyline [attr.points]="gerarPontosNivel()" fill="none" stroke="#22c55e" stroke-width="5" stroke-linecap="round"/>
             <circle *ngFor="let item of dadosGrafico; let i = index"
-              [attr.cx]="40 + (i+1)*(340/(dadosGrafico.length+1))"
-              [attr.cy]="160 - (item.nivel / 100)*140"
+              [attr.cx]="calcularCx(i)"
+              [attr.cy]="calcularCyNivel(item.nivel)"
               r="5" [attr.fill]="getCorNivel(item.nivel)" (click)="mostrarTooltip(item, i, 'nivel')"/>
             <text x="20" y="165" font-size="11" fill="#666">0%</text>
             <text x="20" y="115" font-size="11" fill="#666">50%</text>
@@ -107,8 +107,8 @@
           <svg viewBox="0 0 420 200" class="chart-svg">
             <polyline [attr.points]="gerarPontosPh()" fill="none" stroke="#a855f7" stroke-width="5"/>
             <circle *ngFor="let item of dadosGrafico; let i = index"
-              [attr.cx]="40 + (i+1)*(340/(dadosGrafico.length+1))"
-              [attr.cy]="160 - ((item.ph - 0) / 14)*140"
+              [attr.cx]="calcularCx(i)"
+              [attr.cy]="calcularCyPh(item.ph)"
               r="5" [attr.fill]="getCorPh(item.ph)" (click)="mostrarTooltip(item, i, 'ph')"/>
             <text x="20" y="165" font-size="11" fill="#666">0</text>
             <text x="20" y="115" font-size="11" fill="#666">7</text>
@@ -116,7 +116,7 @@
           </svg>
         </div>
 
-        <!-- Turbidez -->
+        <!-- Turbidez - CORRIGIDO COM ESCALA DINÂMICA -->
         <div class="chart-wrapper">
           <h4 class="chart-title">
             <ion-icon name="water-outline"></ion-icon>
@@ -125,12 +125,12 @@
           <svg viewBox="0 0 420 200" class="chart-svg">
             <polyline [attr.points]="gerarPontosTurbidez()" fill="none" stroke="#06b6d4" stroke-width="5"/>
             <circle *ngFor="let item of dadosGrafico; let i = index"
-              [attr.cx]="40 + (i+1)*(340/(dadosGrafico.length+1))"
-              [attr.cy]="160 - (item.turbidez / 100)*140"
+              [attr.cx]="calcularCx(i)"
+              [attr.cy]="calcularCyTurbidez(item.turbidez)"
               r="5" [attr.fill]="getCorTurbidez(item.turbidez)" (click)="mostrarTooltip(item, i, 'turbidez')"/>
             <text x="20" y="165" font-size="11" fill="#666">0</text>
-            <text x="20" y="115" font-size="11" fill="#666">50</text>
-            <text x="20" y="65" font-size="11" fill="#666">100</text>
+            <text x="20" y="115" font-size="11" fill="#666">{{ (getMaxTurbidez() / 2).toFixed(0) }}</text>
+            <text x="20" y="65" font-size="11" fill="#666">{{ getMaxTurbidez() }}</text>
           </svg>
         </div>
       </div>
