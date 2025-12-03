@@ -1,6 +1,6 @@
 /* ============================================= */
 /*    FRUTIGER AERO PERFEITO – VERSÃO FINAL     */
-/*  Bolhas + zero corte de texto + alinhamento */
+/*  Bolhas + zero corte de texto + alinhamento   */
 /* ============================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap');
@@ -15,7 +15,7 @@
 
 /* Fundo Aero + bolhas animadas */
 ion-content {
-  --background: url('https://miro.medium.com/v2/resize:fit:1400/1*_zqJUXJaDneHRrXeXtR5vQ.webp') no-repeat center center / cover; 
+  --background: url('https://i.ytimg.com/vi/RYRPWoxLiko/maxresdefault.jpg') no-repeat center center / cover; 
   position: relative;
   overflow: hidden;
 }
@@ -76,7 +76,7 @@ ion-card, .chart-wrapper, .empty-state-card {
 .stat-box, .sensor-box {
   margin: 12px 16px !important;
   padding: 20px 24px !important;
-  min-height: 92px !important;        /* altura mínima generosa */
+  min-height: 92px !important;
   border-radius: 28px !important;
   background: rgba(255, 255, 255, 0.32) !important;
   backdrop-filter: blur(16px) saturate(180%);
@@ -91,7 +91,7 @@ ion-card, .chart-wrapper, .empty-state-card {
   z-index: 2;
 }
 
-/* Rótulos pequenos (NÍVEL MÉDIO, PH MÉDIO, etc.) */
+/* Rótulos pequenos */
 .stat-label, .sensor-label {
   font-size: 11px !important;
   font-weight: 700 !important;
@@ -103,15 +103,15 @@ ion-card, .chart-wrapper, .empty-state-card {
   opacity: 0.9;
 }
 
-/* VALORES GRANDES – NUNCA MAIS CORTAM */
+/* VALORES GRANDES */
 .stat-value, .sensor-value {
   font-size: 34px !important;
   font-weight: 700 !important;
   color: #003366 !important;
-  line-height: 1.05 !important;       /* essencial pra não cortar g/p/y */
+  line-height: 1.05 !important;
   margin: 0 !important;
   padding: 0 !important;
-  transform: translateY(2px);        /* ajuste fino perfeito */
+  transform: translateY(2px);
 
   .unit {
     font-size: 19px !important;
@@ -126,7 +126,7 @@ ion-card-header, .card-header-custom {
   background: linear-gradient(135deg, rgba(100, 180, 255, 0.5), rgba(135, 206, 250, 0.7));
   backdrop-filter: blur(12px);
   padding: 22px 24px !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
   
   .card-title-icon {
     font-size: 23px;
@@ -143,9 +143,17 @@ ion-button {
   font-size: 16px;
   font-weight: 600;
   margin: 12px 16px;
-  
-  &.select-date-btn { --background: linear-gradient(135deg, #00ccff, #0099ff); --box-shadow: 0 8px 28px rgba(0, 150, 255, 0.5); }
-  &.clear-filter-btn, &.show-more-btn { --background: rgba(255, 255, 255, 0.4); --color: #003366; }
+
+  &.select-date-btn { 
+    --background: linear-gradient(135deg, #00ccff, #0099ff);
+    --box-shadow: 0 8px 28px rgba(255, 255, 255, 0.5);
+  }
+
+  &.clear-filter-btn, 
+  &.show-more-btn { 
+    --background: rgba(255, 255, 255, 0.4); 
+    --color: #003366; 
+  }
 }
 
 /* Gráficos e legenda */
@@ -163,4 +171,24 @@ ion-button {
   .stat-value .unit, .sensor-value .unit { font-size: 17px !important; }
   .stat-box, .sensor-box { min-height: 86px !important; padding: 18px 20px !important; }
   ion-card, .chart-wrapper { margin: 12px !important; }
+}
+
+/* FORÇA TODO TEXTO A FICAR BRANCO — PRIORIDADE MÁXIMA */
+ion-content * {
+  color: #ffffff !important;
+  --color: #ffffff !important;
+  --text-color: #ffffff !important;
+}
+
+/* ============================================= */
+/*      BOTÃO “MOSTRAR MAIS” BRANCO DE VERDADE  */
+/* ============================================= */
+
+ion-button.show-more-btn {
+  --color: #ffffff !important; /* texto branco */
+  color: #ffffff !important;   /* fallback */
+}
+
+ion-button.show-more-btn ion-icon {
+  color: #ffffff !important;   /* ícone branco */
 }
