@@ -5,7 +5,7 @@ import { interval, Subscription } from 'rxjs';
 interface SensorData {
   nome: string;
   nivel: number;
-  temperatura: number;
+  umidade: number;
   turbidez: number;
   timestamp: string;
 }
@@ -13,7 +13,7 @@ interface SensorData {
 interface GraficoData {
   indice: number;
   nivel: number;
-  temperatura: number;
+  umidade: number;
   sensor: string;
   hora: string;
 }
@@ -44,8 +44,8 @@ export class DashboardPage implements OnInit, OnDestroy {
   nivelMaximo: number = 0;
   nivelMinimo: number = 0;
 
-  // Estatística de temperatura
-  temperaturaMedia: number = 0;
+  // Estatística de umidade
+  umidadeMedia: number = 0;
 
   private atualizacaoAutomatica!: Subscription;
 
@@ -114,7 +114,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.dadosGrafico = this.dadosFiltrados.map((item, index) => ({
       indice: index + 1,
       nivel: parseFloat(item.nivel?.toString() || '0'),
-      temperatura: parseFloat(item.temperatura?.toString() || '0'),
+      umidade: parseFloat(item.umidade?.toString() || '0'),
       sensor: item.nome || `Sensor ${index + 1}`,
       hora: this.extrairHora(item.timestamp)
     }));
@@ -127,17 +127,17 @@ export class DashboardPage implements OnInit, OnDestroy {
       this.nivelMedio = 0;
       this.nivelMaximo = 0;
       this.nivelMinimo = 0;
-      this.temperaturaMedia = 0;
+      this.umidadeMedia = 0;
       return;
     }
 
     const niveis = this.dadosGrafico.map(d => d.nivel);
-    const temperaturas = this.dadosGrafico.map(d => d.temperatura);
+    const umidades = this.dadosGrafico.map(d => d.umidade);
 
     this.nivelMedio = parseFloat((niveis.reduce((a, b) => a + b, 0) / niveis.length).toFixed(1));
     this.nivelMaximo = Math.max(...niveis);
     this.nivelMinimo = Math.min(...niveis);
-    this.temperaturaMedia = parseFloat((temperaturas.reduce((a, b) => a + b, 0) / temperaturas.length).toFixed(1));
+    this.umidadeMedia = parseFloat((umidades.reduce((a, b) => a + b, 0) / umidades.length).toFixed(1));
   }
 
   extrairHora(timestamp: string): string {
@@ -200,12 +200,12 @@ export class DashboardPage implements OnInit, OnDestroy {
     return this.gerarPontos('nivel', 100); // ajuste se o nível for outro máximo
   }
 
-  // Gráfico linha da temperatura
-  gerarPontostemperatura(): string {
-    return this.gerarPontos('temperatura', 100);
+  // Gráfico linha da umidade
+  gerarPontosUmidade(): string {
+    return this.gerarPontos('umidade', 100);
   }
 
-  private gerarPontos(tipo: 'nivel' | 'temperatura', valorMax: number): string {
+  private gerarPontos(tipo: 'nivel' | 'umidade', valorMax: number): string {
     if (this.dadosGrafico.length === 0) return '';
 
     const pontos: string[] = [];
@@ -231,10 +231,10 @@ export class DashboardPage implements OnInit, OnDestroy {
     return '#10b981'; // bom
   }
 
-  getCortemperatura(temperatura: number): string {
-    if (temperatura < 30) return '#ef4444';
-    if (temperatura < 50) return '#f59e0b';
-    if (temperatura < 70) return '#3b82f6';
+  getCorUmidade(umidade: number): string {
+    if (umidade < 30) return '#ef4444';
+    if (umidade < 50) return '#f59e0b';
+    if (umidade < 70) return '#3b82f6';
     return '#10b981';
   }
 }
