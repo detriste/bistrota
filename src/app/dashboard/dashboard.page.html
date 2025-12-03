@@ -2,7 +2,7 @@
   <ion-toolbar color="primary">
     <ion-title>
       <ion-icon name="analytics-outline" class="header-icon"></ion-icon>
-    Sensores
+      Dashboard de Sensores
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -212,6 +212,10 @@
           <span class="legend-dot humidity"></span>
           <span>Umidade</span>
         </div>
+        <div class="legend-info">
+          <ion-icon name="information-circle-outline"></ion-icon>
+          <span>Gráficos atualizados a cada 10 segundos</span>
+        </div>
       </div>
     </ion-card-content>
   </ion-card>
@@ -241,8 +245,8 @@
               <ion-icon name="thermometer-outline"></ion-icon>
             </div>
             <div class="sensor-data">
-              <p class="sensor-label">Nível da água</p>
-              <p class="sensor-value">{{ item.Nível }}<span class="unit">°C</span></p>
+              <p class="sensor-label">Temperatura</p>
+              <p class="sensor-value">{{ item.temperatura }}<span class="unit">°C</span></p>
             </div>
           </div>
           
