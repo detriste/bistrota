@@ -14,7 +14,7 @@
     </ion-toolbar>
   </ion-header>
 
-  <!-- Card de Filtro com design melhorado -->
+  <!-- Card de Filtro -->
   <ion-card class="filter-card">
     <ion-card-header>
       <ion-card-title class="card-title-icon">
@@ -46,13 +46,11 @@
         presentation="date"
         [(ngModel)]="dataSelecionada"
         (ionChange)="onDataChange($event)"
-        [preferWheel]="false"
         locale="pt-BR"
         [max]="dataMaxima"
         class="datetime-custom">
       </ion-datetime>
-      
-      <!-- Badge de registros -->
+
       <div class="records-badge" *ngIf="dadosFiltrados.length > 0">
         <ion-icon name="document-text-outline"></ion-icon>
         <span>{{ dadosFiltrados.length }} registro(s) {{ dataSelecionada ? 'encontrado(s)' : 'no total' }}</span>
@@ -60,173 +58,14 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Card do Gráfico -->
-  <ion-card class="chart-card" *ngIf="dadosGrafico.length > 0">
-    <ion-card-header>
-      <ion-card-title class="card-title-icon">
-        <ion-icon name="stats-chart-outline" class="title-icon"></ion-icon>
-        Análise de Sensores
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content class="chart-content">
-      
-      <!-- Cards de Estatísticas -->
-      <div class="stats-grid">
-        <div class="stat-box temp">
-          <div class="stat-icon">
-            <ion-icon name="thermometer-outline"></ion-icon>
-          </div>
-          <div class="stat-data">
-            <p class="stat-label">Temperatura Média</p>
-            <p class="stat-value">{{ tempMedia }}<span class="unit">°C</span></p>
-          </div>
-        </div>
-
-        <div class="stat-box">
-          <div class="stat-icon temp-max">
-            <ion-icon name="arrow-up-outline"></ion-icon>
-          </div>
-          <div class="stat-data">
-            <p class="stat-label">Máxima</p>
-            <p class="stat-value">{{ tempMaxima }}<span class="unit">°C</span></p>
-          </div>
-        </div>
-
-        <div class="stat-box">
-          <div class="stat-icon temp-min">
-            <ion-icon name="arrow-down-outline"></ion-icon>
-          </div>
-          <div class="stat-data">
-            <p class="stat-label">Mínima</p>
-            <p class="stat-value">{{ tempMinima }}<span class="unit">°C</span></p>
-          </div>
-        </div>
-
-        <div class="stat-box humidity">
-          <div class="stat-icon">
-            <ion-icon name="water-outline"></ion-icon>
-          </div>
-          <div class="stat-data">
-            <p class="stat-label">Umidade Média</p>
-            <p class="stat-value">{{ umidadeMedia }}<span class="unit">%</span></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Gráficos -->
-      <div class="charts-container">
-        <!-- Gráfico de Temperatura -->
-        <div class="chart-wrapper">
-          <h4 class="chart-title">
-            <ion-icon name="thermometer-outline"></ion-icon>
-            Temperatura (°C)
-          </h4>
-          <svg viewBox="0 0 420 200" class="chart-svg" preserveAspectRatio="xMidYMid meet">
-            <!-- Grid horizontal -->
-            <line x1="40" y1="160" x2="400" y2="160" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4"/>
-            <line x1="40" y1="110" x2="400" y2="110" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4"/>
-            <line x1="40" y1="60" x2="400" y2="60" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4"/>
-            
-            <!-- Eixos -->
-            <line x1="40" y1="160" x2="400" y2="160" stroke="#9ca3af" stroke-width="2"/>
-            <line x1="40" y1="20" x2="40" y2="160" stroke="#9ca3af" stroke-width="2"/>
-            
-            <!-- Labels eixo Y -->
-            <text x="20" y="165" font-size="11" fill="#6b7280" text-anchor="end">0</text>
-            <text x="20" y="115" font-size="11" fill="#6b7280" text-anchor="end">15</text>
-            <text x="20" y="65" font-size="11" fill="#6b7280" text-anchor="end">30</text>
-            
-            <!-- Linha do gráfico -->
-            <polyline 
-              [attr.points]="gerarPontosTemperatura()" 
-              fill="none" 
-              stroke="#f97316" 
-              stroke-width="5"
-              stroke-linecap="round"
-              stroke-linejoin="round"/>
-            
-            <!-- Pontos do gráfico -->
-            <circle 
-              *ngFor="let item of dadosGrafico; let i = index"
-              [attr.cx]="40 + (i + 1) * (340 / (dadosGrafico.length + 1))"
-              [attr.cy]="160 - (item.temperatura / 30) * 140"
-              r="4"
-              [attr.fill]="getCorTemperatura(item.temperatura)"
-              stroke="white"
-              stroke-width="2"
-              class="chart-point"/>
-          </svg>
-        </div>
-
-        <!-- Gráfico de Umidade -->
-        <div class="chart-wrapper">
-          <h4 class="chart-title">
-            <ion-icon name="water-outline"></ion-icon>
-            Umidade (%)
-          </h4>
-          <svg viewBox="0 0 420 200" class="chart-svg" preserveAspectRatio="xMidYMid meet">
-            <!-- Grid horizontal -->
-            <line x1="40" y1="160" x2="400" y2="160" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4"/>
-            <line x1="40" y1="110" x2="400" y2="110" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4"/>
-            <line x1="40" y1="60" x2="400" y2="60" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4"/>
-            
-            <!-- Eixos -->
-            <line x1="40" y1="160" x2="400" y2="160" stroke="#9ca3af" stroke-width="2"/>
-            <line x1="40" y1="20" x2="40" y2="160" stroke="#9ca3af" stroke-width="2"/>
-            
-            <!-- Labels eixo Y -->
-            <text x="20" y="165" font-size="11" fill="#6b7280" text-anchor="end">0</text>
-            <text x="20" y="115" font-size="11" fill="#6b7280" text-anchor="end">50</text>
-            <text x="20" y="65" font-size="11" fill="#6b7280" text-anchor="end">100</text>
-            
-            <!-- Linha do gráfico -->
-            <polyline 
-              [attr.points]="gerarPontosUmidade()" 
-              fill="none" 
-              stroke="#06b6d4" 
-              stroke-width="5"
-              stroke-linecap="round"
-              stroke-linejoin="round"/>
-            
-            <!-- Pontos do gráfico -->
-            <circle 
-              *ngFor="let item of dadosGrafico; let i = index"
-              [attr.cx]="40 + (i + 1) * (340 / (dadosGrafico.length + 1))"
-              [attr.cy]="160 - (item.umidade / 100) * 140"
-              r="4"
-              [attr.fill]="getCorUmidade(item.umidade)"
-              stroke="white"
-              stroke-width="2"
-              class="chart-point"/>
-          </svg>
-        </div>
-      </div>
-
-      <!-- Legenda de Dados -->
-      <div class="chart-legend">
-        <div class="legend-item">
-          <span class="legend-dot temp"></span>
-          <span>Temperatura</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-dot humidity"></span>
-          <span>Umidade</span>
-        </div>
-        <div class="legend-info">
-          <ion-icon name="information-circle-outline"></ion-icon>
-          <span>Gráficos atualizados a cada 10 segundos</span>
-        </div>
-      </div>
-    </ion-card-content>
-  </ion-card>
-
-  <!-- Lista de Dados com cards melhorados -->
+  <!-- Lista -->
   <div *ngIf="dadosFiltrados.length > 0; else semDados" class="data-list">
-    <ion-card *ngFor="let item of dadosFiltradosVisiveis" class="sensor-card">
+    <ion-card *ngFor="let item of dadosFiltrados" class="sensor-card">
+      
       <div class="card-header-custom">
         <div class="user-info">
           <div class="avatar-circle">
-            <ion-icon name="person"></ion-icon>
+            <ion-icon name="hardware-chip-outline"></ion-icon>
           </div>
           <div class="user-details">
             <h3>{{ item.nome }}</h3>
@@ -237,47 +76,43 @@
           </div>
         </div>
       </div>
-      
+
       <ion-card-content>
         <div class="sensors-grid">
-          <div class="sensor-box temperature">
+
+          <!-- BOX NÍVEL -->
+          <div class="sensor-box nivel">
             <div class="sensor-icon-wrapper">
-              <ion-icon name="thermometer-outline"></ion-icon>
+              <ion-icon name="speedometer-outline"></ion-icon>
             </div>
             <div class="sensor-data">
-              <p class="sensor-label">Temperatura</p>
-              <p class="sensor-value">{{ item.temperatura }}<span class="unit">°C</span></p>
+              <p class="sensor-label">Nível</p>
+              <p class="sensor-value">{{ item.nivel }}
+                <span class="unit">%</span>
+              </p>
             </div>
           </div>
-          
+
+          <!-- BOX temperatura -->
           <div class="sensor-box humidity">
             <div class="sensor-icon-wrapper">
               <ion-icon name="water-outline"></ion-icon>
             </div>
             <div class="sensor-data">
-              <p class="sensor-label">Umidade</p>
-              <p class="sensor-value">{{ item.umidade }}<span class="unit">%</span></p>
+              <p class="sensor-label">temperatura</p>
+              <p class="sensor-value">{{ item.temperatura }}
+                <span class="unit">%</span>
+              </p>
             </div>
           </div>
+
         </div>
       </ion-card-content>
-    </ion-card>
 
-    <!-- Botão Mostrar Mais -->
-    <div class="show-more-container" *ngIf="dadosFiltrados.length > 2">
-      <ion-button 
-        expand="block" 
-        fill="outline" 
-        color="primary"
-        (click)="toggleMostrarMais()"
-        class="show-more-btn">
-        <ion-icon slot="start" [name]="mostrarTodos ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
-        {{ mostrarTodos ? 'Mostrar Menos' : 'Mostrar Mais (' + (dadosFiltrados.length - 2) + ')' }}
-      </ion-button>
-    </div>
+    </ion-card>
   </div>
 
-  <!-- Estado vazio melhorado -->
+  <!-- Empty State -->
   <ng-template #semDados>
     <ion-card class="empty-state-card">
       <ion-card-content class="empty-state">
