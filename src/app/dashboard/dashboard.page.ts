@@ -29,6 +29,8 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   dados: any[] = [];
   dadosFiltrados: any[] = [];
+  dadosFiltradosVisiveis: any[] = [];
+  mostrarTodos: boolean = false;
   dataSelecionada: string = '';
   exibirCalendario: boolean = false;
   dataMaxima: string = new Date().toISOString();
@@ -75,6 +77,8 @@ export class DashboardPage implements OnInit, OnDestroy {
         if (this.dataSelecionada) {
           this.filtrarPorData(this.dataSelecionada);
         }
+        // Atualiza a lista visível
+        this.atualizarListaVisivel();
         // Atualiza o gráfico com os novos dados
         this.atualizarGrafico();
       }, error: (err) => {
@@ -87,6 +91,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     if (!dataISO || this.dados.length === 0) {
       this.dadosFiltrados = this.dados;
       console.log('Sem filtro aplicado. Total de dados:', this.dados.length);
+      this.atualizarListaVisivel();
       this.atualizarGrafico();
       return;
     }
@@ -108,6 +113,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     });
 
     console.log(`Dados filtrados para ${dataFormatada}:`, this.dadosFiltrados.length);
+    this.atualizarListaVisivel();
     this.atualizarGrafico();
   }
 
@@ -169,9 +175,23 @@ export class DashboardPage implements OnInit, OnDestroy {
   limparFiltro() {
     this.dataSelecionada = '';
     this.dadosFiltrados = this.dados;
+    this.atualizarListaVisivel();
     this.atualizarGrafico();
     this.exibirCalendario = false;
     console.log('Filtro removido. Mostrando todos os dados:', this.dadosFiltrados.length);
+  }
+
+  toggleMostrarMais() {
+    this.mostrarTodos = !this.mostrarTodos;
+    this.atualizarListaVisivel();
+  }
+
+  atualizarListaVisivel() {
+    if (this.mostrarTodos) {
+      this.dadosFiltradosVisiveis = this.dadosFiltrados;
+    } else {
+      this.dadosFiltradosVisiveis = this.dadosFiltrados.slice(0, 2);
+    }
   }
 
   formatarData(dataISO: string): string {
