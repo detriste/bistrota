@@ -4,14 +4,14 @@ import { interval, Subscription } from 'rxjs';
 
 interface SensorData {
   nome: string;
-  temperatura: number;
+  nivel: number;
   umidade: number;
   timestamp: string;
 }
 
 interface GraficoData {
   indice: number;
-  temperatura: number;
+  nivel: number;
   umidade: number;
   sensor: string;
   hora: string;
@@ -121,7 +121,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     // Transforma os dados filtrados para o formato do gráfico
     this.dadosGrafico = this.dadosFiltrados.map((item, index) => ({
       indice: index + 1,
-      temperatura: parseFloat(item.temperatura?.toString() || '0'),
+      nivelratura: parseFloat(item.nivelratura?.toString() || '0'),
       umidade: parseFloat(item.umidade?.toString() || '0'),
       sensor: item.nome || `Sensor ${index + 1}`,
       hora: this.extrairHora(item.timestamp)
@@ -142,12 +142,12 @@ export class DashboardPage implements OnInit, OnDestroy {
       return;
     }
 
-    const temperaturas = this.dadosGrafico.map(d => d.temperatura);
+    const nivelraturas = this.dadosGrafico.map(d => d.nivelratura);
     const umidades = this.dadosGrafico.map(d => d.umidade);
 
-    this.tempMedia = parseFloat((temperaturas.reduce((a, b) => a + b, 0) / temperaturas.length).toFixed(1));
-    this.tempMaxima = Math.max(...temperaturas);
-    this.tempMinima = Math.min(...temperaturas);
+    this.tempMedia = parseFloat((nivelraturas.reduce((a, b) => a + b, 0) / nivelraturas.length).toFixed(1));
+    this.tempMaxima = Math.max(...nivelraturas);
+    this.tempMinima = Math.min(...nivelraturas);
     this.umidadeMedia = parseFloat((umidades.reduce((a, b) => a + b, 0) / umidades.length).toFixed(1));
   }
 
@@ -208,9 +208,9 @@ export class DashboardPage implements OnInit, OnDestroy {
     return timestampBR;
   }
 
-  // Gera os pontos do gráfico de temperatura
-  gerarPontosTemperatura(): string {
-    return this.gerarPontos('temperatura', 30);
+  // Gera os pontos do gráfico de nivelratura
+  gerarPontosnivelratura(): string {
+    return this.gerarPontos('nivelratura', 30);
   }
 
   // Gera os pontos do gráfico de umidade
@@ -219,7 +219,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   // Método auxiliar para gerar pontos
-  private gerarPontos(tipo: 'temperatura' | 'umidade', valorMax: number): string {
+  private gerarPontos(tipo: 'nivelratura' | 'umidade', valorMax: number): string {
     if (this.dadosGrafico.length === 0) return '';
 
     const pontos: string[] = [];
@@ -239,8 +239,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     return pontos.join(' ');
   }
 
-  // Obtém a cor baseada no valor de temperatura
-  getCorTemperatura(temp: number): string {
+  // Obtém a cor baseada no valor de nivelratura
+  getCornivelratura(temp: number): string {
     if (temp < 15) return '#3b82f6'; // Azul frio
     if (temp < 20) return '#10b981'; // Verde
     if (temp < 25) return '#f59e0b'; // Amarelo
