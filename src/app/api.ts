@@ -12,7 +12,7 @@ export class Api {
   constructor(private htpp:HttpClient) {}
 
   getSensores():Observable<any[]>{
-    return this.htpp.get<any[]>(this.apiUrl+"/api/leituras/final")
+    return this.htpp.get<any[]>(this.apiUrl+"/api/leituras/med")
   }
   
 
