@@ -133,7 +133,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     if (!this.dadosGrafico.length) return '';
     
     return this.dadosGrafico.map((d, i) => {
-      const x = 40 + (i + 1) * (340 / (this.dadosGrafico.length + 1));
+      const x = 60 + i * (300 / (this.dadosGrafico.length - 1 || 1)); // melhor espaçamento
       let valor = campo === 'ph' ? d.ph : campo === 'turbidez' ? d.turbidez : d.nivel;
       
       // Para pH, ajusta a escala de 0-14 para começar do zero
@@ -174,7 +174,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   calcularCx(index: number): number {
-    return 40 + (index + 1) * (340 / (this.dadosGrafico.length + 1));
+    return 60 + index * (300 / (this.dadosGrafico.length - 1 || 1));
   }
 
   // Tooltip para exibir detalhes ao clicar nos pontos do gráfico
@@ -191,7 +191,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.tooltipHora = item.hora;
     
     // Usa o mesmo cálculo de X e Y dos pontos do gráfico
-    this.tooltipX = 40 + (i + 1) * (340 / (this.dadosGrafico.length + 1));
+    this.tooltipX = 60 + i * (300 / (this.dadosGrafico.length - 1 || 1));
     this.tooltipY = 160 - (valor / max) * 140 + 60;
     this.tooltipVisivel = true;
   }

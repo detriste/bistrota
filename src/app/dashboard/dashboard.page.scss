@@ -192,3 +192,21 @@ ion-button.show-more-btn {
 ion-button.show-more-btn ion-icon {
   color: #ffffff !important;   /* ícone branco */
 }
+/* BOTÃO "MOSTRAR MAIS" COMPLETAMENTE BRANCO */
+ion-button.show-more-btn {
+  --color: #ffffff !important;        /* texto branco */
+  color: #ffffff !important;          /* fallback */
+  
+  --border-color: #ffffff !important; /* borda branca */
+  border-color: #ffffff !important;   /* fallback */
+}
+
+ion-button.show-more-btn ion-icon {
+  color: #ffffff !important;          /* ícone branco */
+}
+
+/* Força o outline branco até no native */
+ion-button.show-more-btn::part(native) {
+  border-color: #ffffff !important;
+  color: #ffffff !important;
+}
