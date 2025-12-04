@@ -1,7 +1,3 @@
-/* ============================================= */
-/*    FRUTIGER AERO PERFEITO – VERSÃO FINAL     */
-/*  Bolhas + zero corte de texto + alinhamento   */
-/* ============================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap');
 
@@ -156,11 +152,174 @@ ion-button {
   }
 }
 
+/* ============================================= */
+/*      CALENDÁRIO FRUTIGER AERO PREMIUM        */
+/* ============================================= */
+
+.ion-datetime-frutiger {
+  border-radius: 28px !important;
+  background: rgba(255, 255, 255, 0.35) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 2px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 
+    0 15px 50px rgba(0, 120, 255, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.8) !important;
+  padding: 20px !important;
+  margin: 16px 0 !important;
+}
+
+/* Botões do calendário (dias) */
+.ion-datetime-frutiger::part(calendar-day) {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-radius: 16px !important;
+  border: 1.5px solid rgba(100, 180, 255, 0.4) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  margin: 4px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 100, 255, 0.15);
+}
+
+.ion-datetime-frutiger::part(calendar-day):hover {
+  background: rgba(100, 200, 255, 0.5) !important;
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 8px 24px rgba(0, 150, 255, 0.4) !important;
+  transform: translateY(-2px) scale(1.05);
+}
+
+/* Dia ativo/selecionado */
+.ion-datetime-frutiger::part(calendar-day-active),
+.ion-datetime-frutiger::part(calendar-day)[data-selected="true"] {
+  background: linear-gradient(135deg, #00ccff, #0099ff) !important;
+  border-color: rgba(255, 255, 255, 0.9) !important;
+  color: #ffffff !important;
+  box-shadow: 
+    0 10px 30px rgba(0, 120, 255, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+  font-weight: 700 !important;
+  transform: scale(1.1);
+}
+
+/* Cabeçalho do calendário (mês/ano) */
+.ion-datetime-frutiger::part(month-year-button) {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 18px !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 20px !important;
+  padding: 10px 20px !important;
+  backdrop-filter: blur(12px);
+}
+
+/* Botões de navegação (setas) */
+.ion-datetime-frutiger::part(calendar-next-prev) {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 100, 255, 0.2) !important;
+  transition: all 0.3s ease !important;
+}
+
+.ion-datetime-frutiger::part(calendar-next-prev):hover {
+  background: rgba(100, 200, 255, 0.5) !important;
+  box-shadow: 0 6px 20px rgba(0, 150, 255, 0.4) !important;
+  transform: scale(1.1);
+}
+
+/* Dias da semana (S T Q Q S S D) */
+.ion-datetime-frutiger::part(calendar-day-of-week) {
+  color: rgba(0, 0, 0, 0.95) !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.5px !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Dias desabilitados */
+.ion-datetime-frutiger::part(calendar-day-disabled) {
+  opacity: 0.35 !important;
+  pointer-events: none !important;
+}
+
+/* ============================================= */
+/*      GRÁFICOS FRUTIGER AERO PREMIUM         */
+/* ============================================= */
+
+.chart-wrapper-frutiger {
+  margin: 20px 16px !important;
+  padding: 28px !important;
+  border-radius: 32px !important;
+  background: rgba(255, 255, 255, 0.32) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 
+    0 15px 50px rgba(0, 120, 255, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.8);
+  overflow: visible !important;
+  position: relative;
+}
+
+.chart-wrapper-frutiger::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 32px;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(100, 200, 255, 0.6), rgba(150, 220, 255, 0.4));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.chart-wrapper-frutiger .chart-title {
+  color: #ffffff !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  margin-bottom: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.4) !important;
+}
+
+.chart-wrapper-frutiger .chart-title ion-icon {
+  font-size: 24px !important;
+  filter: drop-shadow(0 2px 6px rgba(0, 150, 255, 0.5));
+}
+
+/* Pontos do gráfico com efeito hover */
+.chart-point {
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chart-point:hover {
+  r: 14 !important;
+  stroke-width: 5 !important;
+  filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.6)) !important;
+}
+
+/* SVG com fundo sutil */
+.chart-svg {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 10px;
+  backdrop-filter: blur(8px);
+}
+
 /* Gráficos e legenda */
 .chart-wrapper, .chart-legend {
-  border-radius: 28px !important;
-  padding: 24px !important;
-  margin: 16px !important;
+  border-radius: 30px !important;
+  padding: 23px !important;
+  margin: 1px !important;
   background: rgba(255, 255, 255, 0.3) !important;
   backdrop-filter: blur(14px);
 }
@@ -181,7 +340,7 @@ ion-content * {
 }
 
 /* ============================================= */
-/*      BOTÃO “MOSTRAR MAIS” BRANCO DE VERDADE  */
+/*      BOTÃO "MOSTRAR MAIS" BRANCO DE VERDADE  */
 /* ============================================= */
 
 ion-button.show-more-btn {
@@ -209,4 +368,46 @@ ion-button.show-more-btn ion-icon {
 ion-button.show-more-btn::part(native) {
   border-color: #ffffff !important;
   color: #ffffff !important;
+}
+
+/* ============================================= */
+/*  NÚMEROS DOS DIAS DO CALENDÁRIO ESCUROS E LEGÍVEIS  */
+/* ============================================= */
+
+/* Dias normais (não selecionados e não desabilitados) */
+.ion-datetime-frutiger::part(calendar-day) {
+  color: #001122 !important;        /* azul-marinho quase preto – super legível */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important; /* sombra sutil para destacar do fundo claro */
+}
+
+/* Dias do mês atual (mesmo os que estão "fora" do range visível, mas ainda clicáveis) */
+.ion-datetime-frutiger::part(calendar-day active),
+.ion-datetime-frutiger::part(calendar-day):not([disabled]) {
+  color: #001122 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Hover nos dias – mantém escuro mas com leve brilho */
+.ion-datetime-frutiger::part(calendar-day):hover {
+  color: #001f3f !important;        /* um pouco mais claro no hover pra dar feedback */
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Dia selecionado/atual – mantém branco pra destacar do fundo azul */
+.ion-datetime-frutiger::part(calendar-day-active),
+.ion-datetime-frutiger::part(calendar-day)[aria-selected="true"],
+.ion-datetime-frutiger::part(calendar-day)[data-selected="true"] {
+  color: #ffffff !important;        /* branco puro no dia selecionado */
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Dias de outros meses (os cinzas que aparecem fora do mês atual) */
+.ion-datetime-frutiger::part(calendar-day other-month) {
+  color: rgba(0, 17, 34, 0.5) !important;   /* azul bem escuro com 50% de opacidade */
+  text-shadow: none !important;
+}
+
+/* Dias desabilitados */
+.ion-datetime-frutiger::part(calendar-day disabled) {
+  color: rgba(0, 17, 34, 0.3) !important;
 }

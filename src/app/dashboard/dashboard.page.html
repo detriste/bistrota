@@ -34,7 +34,7 @@
         </ion-button>
       </div>
       <ion-datetime *ngIf="exibirCalendario" presentation="date" [(ngModel)]="dataSelecionada"
-        (ionChange)="onDataChange($event)" locale="pt-BR" [max]="dataMaxima" class="datetime-custom">
+        (ionChange)="onDataChange($event)" locale="pt-BR" [max]="dataMaxima" class="datetime-custom ion-datetime-frutiger">
       </ion-datetime>
       <div class="records-badge" *ngIf="dadosFiltrados.length > 0">
         <ion-icon name="document-text-outline"></ion-icon>
@@ -81,56 +81,128 @@
       <!-- Gráficos -->
       <div class="charts-container">
         <!-- Nível da Água -->
-        <div class="chart-wrapper">
+        <div class="chart-wrapper-frutiger">
           <h4 class="chart-title">
             <ion-icon name="speedometer-outline"></ion-icon>
             Nível da Água (%)
           </h4>
           <svg viewBox="0 0 420 200" class="chart-svg">
-            <polyline [attr.points]="gerarPontosNivel()" fill="none" stroke="#22c55e" stroke-width="5" stroke-linecap="round"/>
+            <!-- Grade horizontal com efeito glassmorphism -->
+            <defs>
+              <linearGradient id="gridGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:rgba(255,255,255,0.3);stop-opacity:1" />
+                <stop offset="100%" style="stop-color:rgba(100,180,255,0.2);stop-opacity:1" />
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            
+            <line x1="40" y1="20" x2="400" y2="20" stroke="url(#gridGradient)" stroke-width="2" opacity="0.5"/>
+            <line x1="40" y1="90" x2="400" y2="90" stroke="url(#gridGradient)" stroke-width="2" opacity="0.5"/>
+            <line x1="40" y1="160" x2="400" y2="160" stroke="url(#gridGradient)" stroke-width="2" opacity="0.5"/>
+
+            <!-- Linha principal com glow -->
+            <polyline [attr.points]="gerarPontosNivel()" 
+                      fill="none" 
+                      stroke="#22c55e" 
+                      stroke-width="8" 
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      filter="url(#glow)"/>
+
+            <!-- Pontos cristalinos -->
             <circle *ngFor="let item of dadosGrafico; let i = index"
-              [attr.cx]="calcularCx(i)"
-              [attr.cy]="calcularCyNivel(item.nivel)"
-              r="5" [attr.fill]="getCorNivel(item.nivel)" (click)="mostrarTooltip(item, i, 'nivel')"/>
-            <text x="20" y="165" font-size="11" fill="#666">0%</text>
-            <text x="20" y="115" font-size="11" fill="#666">50%</text>
-            <text x="20" y="65" font-size="11" fill="#666">100%</text>
+                    [attr.cx]="calcularCx(i)"
+                    [attr.cy]="calcularCyNivel(item.nivel)"
+                    r="12" 
+                    [attr.fill]="getCorNivel(item.nivel)"
+                    stroke="#fff" 
+                    stroke-width="4"
+                    filter="url(#glow)"
+                    class="chart-point"
+                    (click)="mostrarTooltip(item, i, 'nivel')"/>
+                    
+            <!-- Rótulos brancos com sombra -->
+            <text x="34" y="24" font-size="14" fill="#fff" text-anchor="end" font-weight="600" style="text-shadow: 0 2px 6px rgba(0,0,0,0.5)">100%</text>
+            <text x="34" y="94" font-size="14" fill="#fff" text-anchor="end" font-weight="600" style="text-shadow: 0 2px 6px rgba(0,0,0,0.5)">50%</text>
+            <text x="34" y="164" font-size="14" fill="#fff" text-anchor="end" font-weight="600" style="text-shadow: 0 2px 6px rgba(0,0,0,0.5)">0%</text>
           </svg>
         </div>
 
         <!-- pH -->
-        <div class="chart-wrapper">
+        <div class="chart-wrapper-frutiger">
           <h4 class="chart-title">
             <ion-icon name="beaker-outline"></ion-icon>
             pH
           </h4>
           <svg viewBox="0 0 420 200" class="chart-svg">
-            <polyline [attr.points]="gerarPontosPh()" fill="none" stroke="#a855f7" stroke-width="5"/>
+            <line x1="40" y1="20" x2="400" y2="20" stroke="url(#gridGradient)" stroke-width="2" opacity="0.5"/>
+            <line x1="40" y1="90" x2="400" y2="90" stroke="url(#gridGradient)" stroke-width="2" opacity="0.5"/>
+            <line x1="40" y1="160" x2="400" y2="160" stroke="url(#gridGradient)" stroke-width="2" opacity="0.5"/>
+
+            <polyline [attr.points]="gerarPontosPh()" 
+                      fill="none" 
+                      stroke="#a855f7" 
+                      stroke-width="8" 
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      filter="url(#glow)"/>
+
             <circle *ngFor="let item of dadosGrafico; let i = index"
-              [attr.cx]="calcularCx(i)"
-              [attr.cy]="calcularCyPh(item.ph)"
-              r="5" [attr.fill]="getCorPh(item.ph)" (click)="mostrarTooltip(item, i, 'ph')"/>
-            <text x="20" y="165" font-size="11" fill="#666">0</text>
-            <text x="20" y="115" font-size="11" fill="#666">7</text>
-            <text x="20" y="65" font-size="11" fill="#666">14</text>
+                    [attr.cx]="calcularCx(i)"
+                    [attr.cy]="calcularCyPh(item.ph)"
+                    r="12" 
+                    [attr.fill]="getCorPh(item.ph)"
+                    stroke="#fff" 
+                    stroke-width="4"
+                    filter="url(#glow)"
+                    class="chart-point"
+                    (click)="mostrarTooltip(item, i, 'ph')"/>
+                    
+            <text x="25" y="24" font-size="14" fill="#fff" text-anchor="end" font-weight="600" style="text-shadow: 0 2px 6px rgba(0,0,0,0.5)">14</text>
+            <text x="25" y="94" font-size="14" fill="#fff" text-anchor="end" font-weight="600" style="text-shadow: 0 2px 6px rgba(0,0,0,0.5)">7</text>
+            <text x="25" y="164" font-size="14" fill="#fff" text-anchor="end" font-weight="600" style="text-shadow: 0 2px 6px rgba(0,0,0,0.5)">0</text>
           </svg>
         </div>
 
         <!-- Turbidez - CORRIGIDO COM ESCALA DINÂMICA -->
-        <div class="chart-wrapper">
+        <div class="chart-wrapper-frutiger">
           <h4 class="chart-title">
             <ion-icon name="water-outline"></ion-icon>
             Turbidez (NTU)
           </h4>
           <svg viewBox="0 0 420 200" class="chart-svg">
-            <polyline [attr.points]="gerarPontosTurbidez()" fill="none" stroke="#06b6d4" stroke-width="5"/>
+            <line x1="40" y1="20" x2="400" y2="20" stroke="url(#gridGradient)" stroke-width="2" opacity="0.5"/>
+            <line x1="40" y1="90" x2="400" y2="90" stroke="url(#gridGradient)" stroke-width="2" opacity="0.5"/>
+            <line x1="40" y1="160" x2="400" y2="160" stroke="url(#gridGradient)" stroke-width="2" opacity="0.5"/>
+
+            <polyline [attr.points]="gerarPontosTurbidez()" 
+                      fill="none" 
+                      stroke="#06b6d4" 
+                      stroke-width="8" 
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      filter="url(#glow)"/>
+
             <circle *ngFor="let item of dadosGrafico; let i = index"
-              [attr.cx]="calcularCx(i)"
-              [attr.cy]="calcularCyTurbidez(item.turbidez)"
-              r="5" [attr.fill]="getCorTurbidez(item.turbidez)" (click)="mostrarTooltip(item, i, 'turbidez')"/>
-            <text x="20" y="165" font-size="11" fill="#666">0</text>
-            <text x="20" y="115" font-size="11" fill="#666">{{ (getMaxTurbidez() / 2).toFixed(0) }}</text>
-            <text x="20" y="65" font-size="11" fill="#666">{{ getMaxTurbidez() }}</text>
+                    [attr.cx]="calcularCx(i)"
+                    [attr.cy]="calcularCyTurbidez(item.turbidez)"
+                    r="12" 
+                    [attr.fill]="getCorTurbidez(item.turbidez)"
+                    stroke="#fff" 
+                    stroke-width="4"
+                    filter="url(#glow)"
+                    class="chart-point"
+                    (click)="mostrarTooltip(item, i, 'turbidez')"/>
+                    
+            <text x="25" y="24" font-size="14" fill="#fff" text-anchor="end" font-weight="600" style="text-shadow: 0 2px 6px rgba(0,0,0,0.5)">{{ getMaxTurbidez() }}</text>
+            <text x="25" y="94" font-size="14" fill="#fff" text-anchor="end" font-weight="600" style="text-shadow: 0 2px 6px rgba(0,0,0,0.5)">{{ (getMaxTurbidez() / 2).toFixed(0) }}</text>
+            <text x="25" y="164" font-size="14" fill="#fff" text-anchor="end" font-weight="600" style="text-shadow: 0 2px 6px rgba(0,0,0,0.5)">0</text>
           </svg>
         </div>
       </div>
@@ -141,12 +213,7 @@
         <small>{{ tooltipSensor }} • {{ tooltipHora }}</small>
       </div>
 
-      <!-- Legenda -->
-      <div class="chart-legend">
-        <div class="legend-item"><span class="legend-dot nivel"></span><span>Nível</span></div>
-        <div class="legend-item"><span class="legend-dot ph"></span><span>pH</span></div>
-        <div class="legend-item"><span class="legend-dot turbidez"></span><span>Turbidez</span></div>
-      </div>
+      
     </ion-card-content>
   </ion-card>
 
