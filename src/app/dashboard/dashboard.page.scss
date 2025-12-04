@@ -153,14 +153,16 @@ ion-button {
 
 /* ============================================= */
 /*      TOOLTIP BALÃO FRUTIGER AERO            */
+/*      MANTÉM fixed E ESCONDE NO SCROLL       */
 /* ============================================= */
 
 .tooltip-balloon {
-  position: fixed;
+  position: fixed; /* Mantém fixed para posicionamento correto */
   z-index: 9999;
   pointer-events: auto;
   transform: translate(-50%, -100%);
   animation: tooltipFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* O tooltip será escondido via JavaScript quando houver scroll */
 }
 
 @keyframes tooltipFadeIn {
