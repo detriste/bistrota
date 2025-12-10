@@ -129,6 +129,25 @@ export class DashboardPage implements OnInit, OnDestroy {
     }
   }
 
+  @HostListener('window:scroll', ['$event'])
+  @HostListener('ionScroll', ['$event'])
+  onScroll(): void {
+    this.esconderTooltip();
+  }
+
+  @HostListener('touchstart', ['$event'])
+  onTouchStart(event: TouchEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.chart-point') && !target.closest('.tooltip-balloon')) {
+      this.esconderTooltip();
+    }
+  }
+
+  @HostListener('touchmove', ['$event'])
+  onTouchMove(): void {
+    this.esconderTooltip();
+  }
+
   // ==================== CARREGAMENTO DE DADOS ====================
 
   private iniciarAtualizacaoAutomatica(): void {
